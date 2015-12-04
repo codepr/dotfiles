@@ -70,3 +70,7 @@ install_zsh () {
 }
 
 install_zsh
+
+# Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
+
+cp $dir/zsh/alias.sh ~/.oh-my-zsh/lib/
