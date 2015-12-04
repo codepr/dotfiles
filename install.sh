@@ -35,6 +35,14 @@ for file in $files; do
     ln -s $dir/$file ~/.$file
 done
 
+# symlink emacs directory
+
+echo -n "Creating a symlink to from ~/dotfiles/emacs pointing to ~/.emacs.d/ "
+ln -s $dir/emacs/ ~/.emacs.d/
+echo "done"
+
+# zsh function
+
 install_zsh () {
     # Test to see if zshell is installed. If it is:
     if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
