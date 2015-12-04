@@ -58,8 +58,8 @@ install_zsh () {
     else
         # If zsh isn't installed, get the platform of the current machine
         platform=$(uname);
-        # If the platform is Linux, try an apt-get to install zsh and then
-        # recurse
+        # If the platform is Linux, try an apt-get (or yum / pacman) to install
+        # zsh and then recurse
         if [[ $platform == 'Linux' ]]; then
             if [[ -f /etc/redhat-release ]]; then # redhat distro
                 sudo yum install zsh
