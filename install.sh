@@ -8,38 +8,37 @@
 
 # Variables
 
-dir = ~/dotfiles                # dotfiles directory
-oldDir = ~/dotfiles_old         # old dotfiles backup directory
-files = "zsh/zshrc vim/vimrc vim oh-my-zsh"
+readonly DIR=~/dotfiles                # dotfiles directory
+readonly OLD_DIR=~/dotfiles_old         # old dotfiles backup directory
+readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf"
 
 # create dotfiles_old in HOMEDIR
 
-echo -n "Creating $oldDir for backup of any existing dotfiles in ~ ..."
-mkdir -p $oldDir
+echo -n "Creating $OLD_DIR for backup of any existing dotfiles in ~ ..."
+mkdir -p $OLD_DIR
 echo "done"
 
 # change to the dotfiles directory
 
-echo -n "Changing to the $dir directory ..."
-cd $dir
+echo -n "Changing to the $DIR directory ..."
+cd $DIR
 echo "done"
 
-# move any existing dotfiles in homedir to dotfiles_old directory, then create
-# symlinks from the homedir to any files in the ~/dotfiles directory specified
-# in $files
-
-for file in $files; do
-    echo "Moving any existing dotfiles from ~ to $oldDir"
-    mv ~/.$file $oldDir
-    echo "Creating symlink to $file in home directory."
-    ln -s $dir/$file ~/.$file
-done
-
-# symlink emacs directory
-
-echo -n "Creating a symlink to from ~/dotfiles/emacs pointing to ~/.emacs.d/ "
-ln -s $dir/emacs/ ~/.emacs.d/
-echo "done"
+create_symlinks() {
+    # move any existing dotfiles in homedir to dotfiles_old directory, then create
+    # symlinks from the homedir to any files in the ~/dotfiles directory specified
+    # in $files
+    for file in $FILES; do
+        echo "Moving any existing dotfiles from ~ to $OLD_DIR"
+        mv ~/.$file $OLD_DIR
+        echo "Creating symlink to $file in home directory."
+        ln -s $DIR/$file ~/.$file
+    done
+    # symlink emacs directory
+    echo -n "Creating a symlink to from ~/dotfiles/emacs pointing to ~/.emacs.d/ "
+    ln -s $DIR/emacs/ ~/.emacs.d/
+    echo "done"
+}
 
 # zsh function
 
@@ -48,7 +47,7 @@ install_zsh () {
     if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
         # Clone my oh-my-zsh repository from GitHub only if it isn't already
         # present
-        if [[ ! -d $dir/oh-my-zsh/ ]]; then
+        if [[ ! -d $DIR/oh-my-zsh/ ]]; then
             git clone http://github.com/robbyrussell/oh-my-zsh.git
         fi
         # Set the default shell to zsh if it isn't currently set to zsh
@@ -77,8 +76,11 @@ install_zsh () {
     fi
 }
 
-install_zsh
+main() {
+    create_symlinks
+    install_zsh
+    # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
+    cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
+}
 
-# Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
-
-cp $dir/zsh/alias.sh ~/.oh-my-zsh/lib/
+main"$@"
