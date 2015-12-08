@@ -3,6 +3,7 @@
 ;; This file contain my personal emacs ido settings.
 ;;; code:
 
+(require 'smex)
 (require 'ido)
 (require 'ido-vertical-mode)
 (setq ido-enable-flex-matching t)
