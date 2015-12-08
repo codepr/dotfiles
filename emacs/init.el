@@ -92,6 +92,7 @@
 (require 'conf-func)
 (require 'conf-latex)
 (require 'conf-ido)
+(require 'conf-eclim)
 (require 'markdown-mode)
 (require 'indent-guide)
 (require 'flycheck)
