@@ -10,7 +10,7 @@
 
 readonly DIR=~/dotfiles                # dotfiles directory
 readonly OLD_DIR=~/dotfiles_old         # old dotfiles backup directory
-readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf"
+readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf eclim/eclimrc"
 
 # create dotfiles_old in HOMEDIR
 

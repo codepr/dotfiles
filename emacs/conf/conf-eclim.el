@@ -1,6 +1,6 @@
-;;; conf-func.el --- Codep's custom functions.
+;;; conf-eclim.el --- Codep's custom eclim configuration.
 ;;; Commentary:
-;; This file contain my personal emacs enhanced functions.
+;; This file contain my personal emacs-eclim conf.
 ;;; code:
 
 (require 'eclim)
