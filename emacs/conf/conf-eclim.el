@@ -23,7 +23,7 @@
 (setq eclimd-wait-for-process nil
       eclimd-default-workspace "~/workspace-eclim"
       eclim-use-yasnippet nil
-      eclim-auto-save nil)
+      eclim-auto-save t)
 
 ;; eclim mode
 (add-hook 'java-mode-hook
