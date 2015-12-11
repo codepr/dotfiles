@@ -12,6 +12,15 @@
 (toggle-frame-maximized)
 ;; make scratch buffer empty
 ;;(setq initial-scratch-message "")
+;; Removes *Completions* and *scratch* from buffer after you've opened a file.
+(add-hook 'minibuffer-exit-hook
+          '(lambda ()
+             (let ((buffer "*Completions*"))
+               (and (get-buffer buffer)
+                    (kill-buffer buffer)))
+             (let ((buffer "*scratch*"))
+               (and (get-buffer buffer)
+                    (kill-buffer buffer)))))
 ;; remove *messages* buffer
 (setq-default message-log-max nil)
 (kill-buffer "*Messages*")
@@ -101,6 +110,7 @@
 (require 'linum)
 (require 'browse-kill-ring)
 (require 'ibuffer)
+(require 'projectile)
 (with-no-warnings
   (require 'cl))
 (setq package-enable-at-startup nil)
@@ -111,6 +121,9 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
 ;; ibuffer sort by major mode
 (setq ibuffer-default-sorting-mode 'major-mode)
+;; projectile
+(projectile-global-mode)
+(setq projectile-enable-caching t)
 ;; ace-jump shortcurt
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 (defvar url-http-attempt-keepalives 'url-http-attempt-keepalives nil)
@@ -118,7 +131,8 @@
   '(auto-complete markdown-mode evil yasnippet atom-one-dark-theme autopair emmet-mode
                   evil-leader evil-nerd-commenter guide-key indent-guide js2-mode
                   key-chord linum-relative python-mode smex web-mode flycheck
-                  ido-vertical-mode which-key tao-theme ensime ace-jump-mode helm)
+                  ido-vertical-mode which-key tao-theme ensime ace-jump-mode helm flx-ido
+                  projectile)
   "List of packages to ensure are installed at launch.")
 
 (defun codep-packages-installed-p ()

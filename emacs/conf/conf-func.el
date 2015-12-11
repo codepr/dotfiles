@@ -103,6 +103,10 @@ Comment the current line if there's no active region."
          (setq current-theme 2))
         ((= current-theme 2)
          (disable-theme 'tao-yang)
+         (load-theme 'atom-one-dark t)
+         (setq current-theme 3))
+        ((= current-theme 3)
+         (disable-theme 'atom-one-dark)
          (load-theme 'stock t)
          (setq current-theme 0))))
 

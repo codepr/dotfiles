@@ -6,6 +6,7 @@
 (require 'smex)
 (require 'ido)
 (require 'ido-vertical-mode)
+(require 'flx-ido)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode t)
