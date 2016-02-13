@@ -17,9 +17,6 @@
           '(lambda ()
              (let ((buffer "*Completions*"))
                (and (get-buffer buffer)
-                    (kill-buffer buffer)))
-             (let ((buffer "*scratch*"))
-               (and (get-buffer buffer)
                     (kill-buffer buffer)))))
 ;; remove *messages* buffer
 (setq-default message-log-max nil)
@@ -94,6 +91,7 @@
 (require 'ace-jump-mode)
 (require 'auto-complete)
 (require 'auto-complete-config)
+;; (require 'company)
 (require 'yasnippet)
 (require 'autopair)
 (require 'web-mode)
@@ -103,7 +101,7 @@
 (require 'conf-ido)
 (require 'conf-eclim)
 (require 'markdown-mode)
-(require 'indent-guide)
+;; (require 'indent-guide)
 (require 'flycheck)
 (require 'which-key)
 (require 'ensime)
@@ -111,12 +109,16 @@
 (require 'browse-kill-ring)
 (require 'ibuffer)
 (require 'projectile)
+(require 'misc)
 (with-no-warnings
   (require 'cl))
 (setq package-enable-at-startup nil)
 (package-initialize)
 ;; allow custom themes
 (setq custom-safe-themes t)
+;; company setup
+;; (add-hook 'after-init-hook 'global-company-mode)
+;; (global-set-key "\t" 'company-complete-common)
 ;; ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
 ;; ibuffer sort by major mode
@@ -124,6 +126,8 @@
 ;; projectile
 (projectile-global-mode)
 (setq projectile-enable-caching t)
+;; forward-to-word vim like
+(global-set-key (kbd "M-f") 'forward-to-word)
 ;; ace-jump shortcurt
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 (defvar url-http-attempt-keepalives 'url-http-attempt-keepalives nil)
@@ -132,7 +136,7 @@
                   evil-leader evil-nerd-commenter guide-key indent-guide js2-mode
                   key-chord linum-relative python-mode smex web-mode flycheck
                   ido-vertical-mode which-key tao-theme ensime ace-jump-mode helm flx-ido
-                  projectile)
+                  projectile emacs-eclim)
   "List of packages to ensure are installed at launch.")
 
 (defun codep-packages-installed-p ()
@@ -151,7 +155,9 @@
 ;; RET autoindent
 (define-key global-map (kbd "RET") 'newline-and-indent)
 (ac-config-default)
+(setq ac-auto-start 4)
 (global-auto-complete-mode t)
+(setq ac-sources '(ac-source-symbols ac-source-words-in-same-mode-buffers))
 ;; snippets path
 (setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-20151108.1505/snippets/"))
 (yas-global-mode 1)
@@ -188,8 +194,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#C2C2C2" "#161616" "#252525" "#080808" "#0E0E0E" "#161616" "#080808" "#080808"])
  '(blink-cursor-mode nil)
  '(column-number-mode t)
+ '(eclim-eclipse-dirs (quote ("/usr/lib/eclipse")))
+ '(eclim-executable "/usr/lib/eclipse/eclim")
+ '(eclimd-executable "/usr/lib/eclipse/eclimd")
+ '(fci-rule-color "#F0F0F0")
  '(frame-background-mode (quote light))
  '(indicate-empty-lines nil)
  '(inhibit-startup-screen t)
@@ -198,7 +210,29 @@
     ((auto-mode . emacs)
      ("\\.mm\\'" . default)
      ("\\.x?html?\\'" . default))))
- '(show-paren-mode t))
+ '(show-paren-mode t)
+ '(vc-annotate-background "#D9D9D9")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#616161")
+     (40 . "#3C3C3C")
+     (60 . "#3C3C3C")
+     (80 . "#252525")
+     (100 . "#252525")
+     (120 . "#161616")
+     (140 . "#161616")
+     (160 . "#0E0E0E")
+     (180 . "#0E0E0E")
+     (200 . "#0E0E0E")
+     (220 . "#080808")
+     (240 . "#080808")
+     (260 . "#080808")
+     (280 . "#080808")
+     (300 . "#080808")
+     (320 . "#080808")
+     (340 . "#080808")
+     (360 . "#080808"))))
+ '(vc-annotate-very-old-color "#161616"))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -225,7 +259,7 @@
 (eval-after-load "org"
   '(require 'ox-md nil t))
 ;; indent guide
-(indent-guide-global-mode)
+;; (indent-guide-global-mode)
 ;; flycheck tool
 (setq flycheck-emacs-lisp-load-path 'inherit)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -238,6 +272,6 @@
 ;; ensime enhanced scala mode
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 ;; load stock theme
-(load-theme 'stock t)
+(load-theme 'atom-one-dark t)
 
 ;;; init.el ends here
