@@ -79,6 +79,7 @@ main() {
     # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
     cp -r $DIR/bin ~/
+    chmod +x ~/bin/*
 }
 
 main"$@"
