@@ -80,6 +80,7 @@ main() {
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
     cp -r $DIR/bin ~/
     chmod +x ~/bin/*
+    cp $DIR/kblayout/.xmodmaprc ~/
 }
 
 main"$@"
