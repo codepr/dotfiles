@@ -8,7 +8,7 @@
 
 # Variables
 
-readonly DIR=~/dotfiles                 # dotfiles directory
+readonly DIR=$(pwd)                     # dotfiles directory
 readonly OLD_DIR=~/dotfiles_old         # old dotfiles backup directory
 readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf eclim/eclimrc"
 
@@ -34,9 +34,6 @@ create_symlinks() {
         echo "Creating symlink to $file in home directory."
         ln -s $DIR/$file ~/.$file
     done
-    # symlink emacs directory
-    echo -n "Creating a symlink to from ~/dotfiles/emacs pointing to ~/.emacs.d/ "
-    ln -s $DIR/emacs/ ~/.emacs.d/
     echo "done"
 }
 
@@ -81,6 +78,7 @@ main() {
     install_zsh
     # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
+    cp -r $DIR/bin ~/
 }
 
 main"$@"
