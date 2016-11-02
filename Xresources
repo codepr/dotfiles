@@ -1,0 +1,18 @@
+XTerm*termName: xterm-256color
+! XTerm*faceName: Source Code Pro:size=10:antialias=true
+XTerm*faceName: Monaco:size=9:antialias=true
+XTerm*font: 7x13
+XTerm*borderWidth: 0
+XTerm*locale: true
+XTerm*metaSendsEscape: true
+! XTerm*foreground: rgb:ef/ef/ef
+XTerm*foreground: rgb:aa/aa/aa
+XTerm*background: rgb:08/08/08
+! XTerm*background: [90]#000000
+XTerm*color0: rgb:28/28/28
+XTerm*saveLines: 4096
+Emacs*toolBar: 0
+! transparency
+! urxvt*depth: 32
+! urxvt*background: [90]#000000
+! URxvt.transparent: true

@@ -10,31 +10,31 @@
 
 readonly DIR=$(pwd)                     # dotfiles directory
 readonly OLD_DIR=~/dotfiles_old         # old dotfiles backup directory
-readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf eclim/eclimrc"
+readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf eclim/eclimrc Xresources"
 
 # create dotfiles_old in HOMEDIR
 
-echo -n "Creating $OLD_DIR for backup of any existing dotfiles in ~ ..."
+echo -n "[*] Creating $OLD_DIR for backup of any existing dotfiles in ~ ..."
 mkdir -p $OLD_DIR
-echo "done"
+echo "    done"
 
 # change to the dotfiles directory
 
-echo -n "Changing to the $DIR directory ..."
+echo -n "[*] Changing to the $DIR directory ..."
 cd $DIR
-echo "done"
+echo "    done"
 
 create_symlinks() {
     # move any existing dotfiles in homedir to dotfiles_old directory, then create
     # symlinks from the homedir to any files in the ~/dotfiles directory specified
     # in $files
     for file in $FILES; do
-        echo "Moving any existing dotfiles from ~ to $OLD_DIR"
+        echo "[*] Moving any existing dotfiles from ~ to $OLD_DIR"
         mv ~/.$file $OLD_DIR
-        echo "Creating symlink to $file in home directory."
+        echo "[*] Creating symlink to $file in home directory."
         ln -s $DIR/$file ~/.$file
     done
-    echo "done"
+    echo "    done"
 }
 
 # zsh function
@@ -45,7 +45,7 @@ install_zsh () {
         # Clone my oh-my-zsh repository from GitHub only if it isn't already
         # present
         if [[ ! -d $DIR/oh-my-zsh/ ]]; then
-            git clone http://github.com/robbyrussell/oh-my-zsh.git
+            git clone https://github.com/robbyrussell/oh-my-zsh.git
         fi
         # Set the default shell to zsh if it isn't currently set to zsh
         if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
@@ -73,14 +73,48 @@ install_zsh () {
     fi
 }
 
+install_base16_shell () {
+    git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+}
+
+init_bin () {
+    if [[ ! -d $HOME/bin/ ]]; then
+        mkdir -p $HOME/bin
+    fi
+    cp -r $DIR/bin/* $HOME/bin
+    chmod +x $HOME/bin/*
+}
+
+get_distro () {
+    lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om
+}
+
 main() {
     create_symlinks
     install_zsh
-    # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
+    # # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
+    init_bin
     cp -r $DIR/bin ~/
     chmod +x ~/bin/*
     cp $DIR/kblayout/.xmodmaprc ~/
+    echo -n "[*] Install base16-shell"
+    install_base16_shell
+    case get_distro in
+        "Arch Linux")
+            # move i3 configurations
+            mkdir -p $HOME/.config/i3 && cp $DIR/i3/config $HOME/.config/i3/config
+            mkdir -p $HOME/.config/i3status && cp $DIR/i3status/config $HOME/.config/i3status/config
+            # downlaod Monaco font from AUR
+            wget https://aur.archlinux.org/cgit/aur.git/snapshot/ttf-monaco.tar.gz
+            tar xvf ttf-monaco.tar.gz
+            cd ttf-monaco
+            mkpkg
+            sudo pacman -U ttf-monaco*
+            ;;
+    esac
+    xrdb $HOME/.Xresources
+    echo -n "[*] Setting base16-apathy as standard zsh colorscheme"
 }
 
 main"$@"

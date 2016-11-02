@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Find all \gloss words inside scalatekids project on docker image
+# Author: Andrea Giacomo Baldan
+# Version 1.0
+
+if [[ $PWD/ = ~/actorbase/Actorbase-Documents/* ]]; then
+    docker run --rm -i --net=none -v ~/actorbase/Actorbase-Documents/:/root/actorbase codep/scalatekids-env:latest findgloss "$@"
+    rm -rf ~/actorbase/Actorbase-Documents/actorbase
+else
+    echo -e "\e[1m[*] Must be used inside \e[32mActorbase-Documents\e[39m folder.\e[0m"
+fi
