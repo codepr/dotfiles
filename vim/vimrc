@@ -1,33 +1,35 @@
-" Personal vimrc
-
-" start pathogen for plugin management
-" execute pathogen#infect()
-" execute pathogen#helptags()
-
-" General settings
-" ================
+" Personal vimrc -- General settings
+" ===================================
 
 set nocompatible				" start with vim instead of vi
 filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.fzf
+
+" fzf settings
+let g:fzf_layout = { 'window': '~40%' }
 
 call vundle#begin()
 
 Plugin 'neomake/neomake'
 Plugin 'hynek/vim-python-pep8-indent'
 " Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdtree'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'jonathanfilip/vim-lucius'
 " Plugin 'vim-airline/vim-airline'
 " Plugin 'vim-airline/vim-airline-themes'
-Plugin 'ensime/ensime-vim'
-Plugin 'derekwyatt/vim-scala'
+" Plugin 'ensime/ensime-vim'
+" Plugin 'derekwyatt/vim-scala'
 Plugin 'Shougo/neocomplete'
 Plugin 'Shougo/neosnippet'
 Plugin 'Shougo/neosnippet-snippets'
-Plugin 'kien/ctrlp.vim'
-Plugin 'rakr/vim-one'
+Plugin 'neovimhaskell/haskell-vim'
+" Plugin 'kien/ctrlp.vim'
+" Plugin 'rakr/vim-one'
 " Plugin 'chriskempson/tomorrow-theme'
 Plugin 'chriskempson/base16-vim'
 
@@ -40,7 +42,6 @@ endif
 try
     colorscheme base16-apathy
     let base16colorspace=256
-    " colorscheme one
     " colorscheme lucius			" colorscheme lucius
     " LuciusDark
 catch
@@ -49,9 +50,12 @@ if has('mouse')
     set mouse=a					" enable mouse
 endif
 "set linebreak					" smart line-break
-let mapleader = ","				" set leader key to ,
-set swapfile					" swap file on
-set dir=~/tmp					" set swap directory to ~/tmp
+let mapleader = " "				" set leader key to <space>
+set nobackup
+set nowb
+set noswapfile
+" set swapfile					" swap file on
+" set dir=~/tmp					" set swap directory to ~/tmp
 set term=screen-256color		" 256 color enabled for console
 set t_Co=256					" 256 color enabled for console
 " set timeoutlen=50				" no pause after insert mode
@@ -61,6 +65,7 @@ set nobackup					" auto-backup set off
 set autochdir
 set hidden						" switch between buffers without having to write
 set exrc
+set colorcolumn=95
 set secure
 set ruler						" show cursor position all the time
 set backspace=indent,eol,start	" backspace behave in insert mode
@@ -70,6 +75,8 @@ set encoding=utf-8				" encoding UTF-8
 set relativenumber				" relative number distance from the current line
 set splitbelow					" more natural splitting
 set splitright					" more natural vertical splitting
+set noerrorbells
+set novisualbell
 syntax on						" switch syntax highlighting on
 try
     set undodir=~/.vim/tmp/undodir
@@ -106,13 +113,15 @@ set autoindent					" auto-indentation
 " set smartindent
 " set cindent						" more strict auto-indentation for c style files
 " set wrap
-" set textwidth=79
+set textwidth=0
+set nowrap
 set number						" show line number
 set laststatus=2				" show the status line all the time
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
+set smarttab
 set list listchars=tab:\ \ ,eol:¬			" display tabs and trailing whitespace
 
 " let loaded_matchparen = 1
@@ -140,19 +149,20 @@ let g:tex_flavor = 'latex'					" latex starting file
 autocmd BufWritePre * :%s/\s\+$//e			" trim trail whitespace on save
 set wildmenu								" enhanced command line completion
 set wildmode=list:longest					" complete files like a shell
-" set noshowmode								" don't show which mode, disabled for airline
+" set cmdheight=2
+set noshowmode								" don't show which mode, disabled for airline
 " au InsertEnter * hi StatusLine ctermbg=DarkBlue
 " au InsertLeave * hi StatusLine ctermfg=Black ctermbg=White
 set statusline=%F%m%r%h%w
-set statusline+=\ [%{strlen(&fenc)?&fenc:&enc}]
-set statusline+=\ [buf:\ %n]
+set statusline+=\ [col:\ %c]
+set statusline+=\ [line:\ %l\/%L][%P]
 set statusline+=%=%y
-set statusline+=%=\ [col:\ %c]
-set statusline+=%=\ [line:\ %l\/%L][%P]
+set statusline+=%=\ [%{strlen(&fenc)?&fenc:&enc}]
+set statusline+=%=\ [buf:\ %n]
 " set statusline+=%#warningmsg#
 " set statusline+=%{SyntasticStatuslineFlag()}
 " set statusline+=%*
-autocmd! BufWritePost,BufEnter * Neomake
+autocmd! BufWritePost * Neomake " no BufEnter
 
 let g:neomake_place_signs = 0
 
@@ -173,15 +183,15 @@ let g:neocomplete#sources#syntax#min_keyword_length = 3
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
 " ctrlp settings
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-let g:ctrlp_custom_ignore = {
-            \ 'dir': '\v[\/]\.(git|hg|svn)$',
-            \ 'file': '\v\.(exe|so|dll)$',
-            \ }
-
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
+" let g:ctrlp_working_path_mode = 'ra'
+" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+" let g:ctrlp_custom_ignore = {
+"             \ 'dir': '\v[\/]\.(git|hg|svn)$',
+"             \ 'file': '\v\.(exe|so|dll)$',
+"             \ }
+"
 " Define dictionary.
 
 let g:neocomplete#sources#dictionary#dictionaries = {
@@ -280,7 +290,6 @@ nnoremap <C-H> <C-W><C-H>
 "map <Leader>j <Plug>(easymotion-j)
 "map <Leader>k <Plug>(easymotion-k)
 " remap keybinding for navigation and saving
-nmap <c-s> :w<CR>
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
 " hard-wrap paragraph
@@ -304,9 +313,6 @@ inoremap <Right> <NOP>
 " behave like normal up and down
 nnoremap j gj
 nnoremap k gk
-" map space to / (search) and backspace to ? (backward search)
-" map <space> /
-" map <backspace> ?
 " remap 0 to first non-blank character
 map 0 ^
 " move a line of text using ALT+[jk]
@@ -321,12 +327,20 @@ map <F4> "+p
 " leader map
 nnoremap <leader>v V`]
 nnoremap <leader>i gg=G``
-nnoremap <leader><space> :noh<cr>
+nnoremap <leader>, :noh<cr>
 nmap <leader>d :bd<cr>
 nmap <leader>D :bufdo bd<cr>
-nnoremap <leader><leader> <c-^>
+" nnoremap <leader><leader> <c-^>
 nnoremap <leader>ll :lopen<cr>
 nnoremap <leader>lc :lclose<cr>
+
+nnoremap <silent> <leader><space> :Files<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
+
+map \ :NERDTreeToggle<CR>
+" sudo save file
+command W w !sudo tee %> /dev/null
+
 " C programming
 set makeprg=make\ -C\ ../build\ -j9
 
