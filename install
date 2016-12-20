@@ -75,6 +75,9 @@ install_zsh () {
 
 install_base16_shell () {
     git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+    echo "BASE16_SHELL=$HOME/.config/base16-shell/
+    [ -n \"$PS1\" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval \"$($BASE16_SHELL/profile_helper.sh)\"
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh" >> ~/.zshrc
 }
 
 init_bin () {
@@ -94,9 +97,9 @@ main() {
     install_zsh
     # # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
-    init_bin
-    cp -r $DIR/bin ~/
-    chmod +x ~/bin/*
+    # init_bin
+    # cp -r $DIR/bin ~/
+    # chmod +x ~/bin/*
     cp $DIR/kblayout/.xmodmaprc ~/
     echo -n "[*] Install base16-shell"
     install_base16_shell
@@ -114,7 +117,8 @@ main() {
             ;;
     esac
     xrdb $HOME/.Xresources
-    echo -n "[*] Setting base16-apathy as standard zsh colorscheme"
+    echo -n "[*] Setting base16-oceanicnext as standard zsh colorscheme"
+    base16-oceanicnext
 }
 
 main"$@"
