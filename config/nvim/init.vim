@@ -6,12 +6,12 @@ set nocompatible
 silent! if plug#begin('~/.config/nvim/plugged')
 
 Plug 'Shougo/deoplete.nvim'
-Plug 'zchee/deoplete-clang'
+" Plug 'zchee/deoplete-clang'
 Plug 'zchee/deoplete-jedi'
 Plug 'tomtom/tcomment_vim'
 Plug 'jonathanfilip/vim-lucius'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf',    {'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -24,10 +24,11 @@ Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdtree'
 " " Plug 'tpope/vim-repeat'
 Plug 'benekastah/neomake'
-" Plug 'ensime/ensime-vim'
+Plug 'ensime/ensime-vim'
 Plug 'vim-scripts/indentpython.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'chriskempson/base16-vim'
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
@@ -36,8 +37,8 @@ endif
 set background=dark
 try
     " colorscheme lucius
-    colorscheme base16-apathy
     let base16colorspace=256
+    source ~/.vimrc_background
 catch
 endtry
 
@@ -81,7 +82,7 @@ let g:tex_flavor = 'latex'					" latex starting file
 autocmd BufWritePre * :%s/\s\+$//e			" trim trail whitespace on save
 set wildmenu								" enhanced command line completion
 set wildmode=list:longest					" complete files like a shell
-set noshowmode								" don't show which mode, disabled for airline
+" set noshowmode								" don't show which mode, disabled for airline
 syntax on					                " switch syntax highlighting on
 try
     set undodir=~/.vim/tmp/undodir
@@ -142,50 +143,62 @@ let g:html_indent_tags = 'li\|p'            " treat li and p like block tags
 
 let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
 " airline
 " =======
 
-let g:airline_section_b = '%{getcwd()}'
-let g:airline_section_c = '%t'
-let g:airline_section_y = 'b: %{bufnr("%")}'
-let g:airline#extensions#whitespace#mixed_indent_algo = 1
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-" powerline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-let g:airline_theme = 'monochrome'
+" let g:airline_section_b = '%{getcwd()}'
+" let g:airline_section_c = '%t'
+" let g:airline_section_y = 'b: %{bufnr("%")}'
+" let g:airline#extensions#whitespace#mixed_indent_algo = 1
+" if !exists('g:airline_symbols')
+"     let g:airline_symbols = {}
+" endif
+" " powerline symbols
+" let g:airline_left_sep = ''
+" let g:airline_left_alt_sep = ''
+" let g:airline_right_sep = ''
+" let g:airline_right_alt_sep = ''
+" let g:airline_symbols.branch = ''
+" let g:airline_symbols.readonly = ''
+" let g:airline_symbols.linenr = ''
+" let g:airline_theme = 'hybrid'
 
-" set statusline=%F%m%r%h%w
-" set statusline+=\ [col:\ %c]
-" set statusline+=\ [line:\ %l\/%L][%P]
-" set statusline+=%=%y
-" set statusline+=%=\ [%{strlen(&fenc)?&fenc:&enc}]
-" set statusline+=%=\ [buf:\ %n]
+
+set statusline=\ \»\ %F%m%r%h%w
+set statusline+=\ \ \»\ col:\ %c
+set statusline+=\ \ \»\ line:\ %l\/%L
+set statusline+=%=\ buf:\ %n
+set statusline+=\ \»\ %P
+set statusline+=\ \ %{exists('g:loaded_fugitive')?fugitive#statusline():''}
+" set statusline+=\ %#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}
+" hi User1 ctermbg=none cterm=bold
 
 " Neomake settings
 " ================
 
 autocmd! BufWritePost * Neomake
 let g:neomake_place_signs = 0
+" let g:neomake_verbose=2
+let g:neomake_echo_current_error=1
 " autocmd BufWritePost *.scala :EnTypeCheck
 
+if has("autocmd")
+    autocmd BufReadPost * if line("'\"") | exe "'\"" | endif
+endif
+
 au BufNewFile,BufRead *.py:
-    \ set tabstop=4
-    \ set softtabstop=4
-    \ set shiftwidth=4
-    \ set expandtab
-    \ set autoindent
-    \ set fileformat=unix
+            \ set tabstop=4
+            \ set softtabstop=4
+            \ set shiftwidth=4
+            \ set expandtab
+            \ set autoindent
+            \ set fileformat=unix
 
 " REMAPPING
 " ===================
+
+map \ :NERDTreeToggle<CR>
 
 " movement between buffers
 nnoremap <C-J> <C-W><C-J>
@@ -241,11 +254,11 @@ nnoremap <leader>v V`]
 " xmap ga <Plug>(EasyAlign)
 " start interactive EasyAlign for a motion/text object (e.g. gaip)
 " nmap ga <Plug>(EasyAlign)
-nmap <silent> <leader>t :TestNearest<CR>
-nmap <silent> <leader>T :TestFile<CR>
-nmap <silent> <leader>a :TestSuite<CR>
-nmap <silent> <leader>l :TestLast<CR>
-nmap <silent> <leader>g :TestVisit<CR>
+" nmap <silent> <leader>t :TestNearest<CR>
+" nmap <silent> <leader>T :TestFile<CR>
+" nmap <silent> <leader>a :TestSuite<CR>
+" nmap <silent> <leader>l :TestLast<CR>
+" nmap <silent> <leader>g :TestVisit<CR>
 
 nnoremap <leader>i gg=G``
 nnoremap <leader>, :noh<CR>
@@ -253,4 +266,9 @@ nnoremap <silent> <leader><space> :Files<CR>
 nnoremap <silent> <leader>b :Buffers<CR>
 nmap <leader>d :bd<CR>
 nmap <leader>D :bufdo bd<CR>
-
+" move selected block around in visual mode
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+" smart cursorline
+autocmd InsertLeave,WinEnter * set cursorline
+autocmd InsertEnter,WinLeave * set nocursorline
