@@ -95,11 +95,13 @@ get_distro () {
 main() {
     create_symlinks
     install_zsh
-    # # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
+    # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
     cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
-    # init_bin
-    # cp -r $DIR/bin ~/
-    # chmod +x ~/bin/*
+    # initialize ~/bin directory for personal scripts
+    init_bin
+    cp -r $DIR/bin ~/
+    chmod +x ~/bin/*
+    # keyboard layout
     cp $DIR/kblayout/.xmodmaprc ~/
     echo -n "[*] Install base16-shell"
     install_base16_shell

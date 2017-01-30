@@ -1,0 +1,89 @@
+#!/usr/bin/sh
+#
+# DESCRIPTION
+#   Rotate between dark and light theme in a i3-window
+#   environment, switching also shell theme using base16
+#   scripts. Meant to be run on a cron job schedule based
+#   on desired time of the day.
+#
+#================================================================
+# IMPLEMENTATION
+#   version         1.0.0
+#   author          Andrea Giacomo Baldan
+#   copyright       Copyright (c) Andrea Giacomo Baldan
+#   license         GNU General Public License
+#
+#===============================================================
+# REQUIREMENTS
+#   i3-wm
+#   base16_shell
+#   base16_themes for vim
+
+# env
+readonly HOME="/home/codep"
+readonly DWALLPAPER="Pictures/blue.jpg"
+readonly LWALLPAPER="Pictures/light.jpg"
+
+# time - winter settings
+readonly MORNING="08:30"
+readonly EVENING="17:30"
+
+# light colors
+readonly LBACKGROUND="#e0e0e0"
+readonly LSTATUSLINE="#1b2b34"
+readonly LINACTIVEWS="#e0e0e0 #e0e0e0 #1b2b34"
+# dark colors
+readonly DBACKGROUND="#1B2B34"
+readonly DSTATUSLINE="#DCDCDC"
+readonly DINACTIVEWS="#1B2B34 #1B2B34 #DCDCDC"
+
+# get current hour
+readonly TIME=$(date +%s)
+readonly UPPER=$(date +%s --date=$EVENING)
+readonly LOWER=$(date +%s --date=$MORNING)
+
+
+# set base16 theme and overwrite ENV variable and vimrc_background
+set_theme() {
+    local script=$1
+    local theme=$2
+    [ -f $script ] && . $script
+    ln -fs $script ~/.base16_theme
+    export BASE16_THEME=${theme}
+    echo "colorscheme base16-$theme" > ~/.vimrc_background
+}
+
+
+if [ $TIME -ge $LOWER -a $TIME -le $UPPER ]; then
+    feh --bg-scale "$HOME/$LWALLPAPER"
+    sed -i "s/^\s*background $DBACKGROUND/\t\t\t# background $DBACKGROUND/" ~/.config/i3/config
+    sed -i "s/^\s*statusline $DSTATUSLINE/\t\t\t# statusline $DSTATUSLINE/" ~/.config/i3/config
+    sed -i "s/^\s*inactive_workspace $DINACTIVEWS/\t\t\t# inactive_workspace $DINACTIVEWS/" ~/.config/i3/config
+    # uncomment light colors
+    sed -i "s/^\s*# background $LBACKGROUND/\t\t\tbackground $LBACKGROUND/" ~/.config/i3/config
+    sed -i "s/^\s*# statusline $LSTATUSLINE/\t\t\tstatusline $LSTATUSLINE/" ~/.config/i3/config
+    sed -i "s/^\s*# inactive_workspace $LINACTIVEWS/\t\t\tinactive_workspace $LINACTIVEWS/" ~/.config/i3/config
+    i3-msg reload
+    set_theme "~/.config/base16-shell/scripts/base16-github.sh" github
+    sh ~/.config/base16-shell/scripts/base16-github.sh
+else
+    # else if time >= 17:30 and <= 08:29 set dark theme
+    feh --bg-scale "$HOME/$DWALLPAPER"
+    # comment light colors
+    sed -i "s/^\s*background $LBACKGROUND/\t\t\t# background $LBACKGROUND/" ~/.config/i3/config
+    sed -i "s/^\s*statusline $LSTATUSLINE/\t\t\t# statusline $LSTATUSLINE/" ~/.config/i3/config
+    sed -i "s/^\s*inactive_workspace $LINACTIVEWS/\t\t\t# inactive_workspace $LINACTIVEWS/" ~/.config/i3/config
+    # uncomment dark colors
+    sed -i "s/^\s*# background $DBACKGROUND/\t\t\tbackground $DBACKGROUND/" ~/.config/i3/config
+    sed -i "s/^\s*# statusline $DSTATUSLINE/\t\t\tstatusline $DSTATUSLINE/" ~/.config/i3/config
+    sed -i "s/^\s*# inactive_workspace $DINACTIVEWS/\t\t\tinactive_workspace $DINACTIVEWS/" ~/.config/i3/config
+    i3-msg reload
+    set_theme "~/.config/base16-shell/scripts/base16-oceanicnext.sh" oceanicnext
+    sh ~/.config/base16-shell/scripts/base16-oceanicnext.sh
+fi
+
+# End when we log out and no X screen is available.
+if [ $? -ne 0 ]; then
+    echo "Feh Error, exiting."
+    exit
+fi

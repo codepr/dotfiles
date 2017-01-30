@@ -6,8 +6,36 @@ set nocompatible
 silent! if plug#begin('~/.config/nvim/plugged')
 
 Plug 'Shougo/deoplete.nvim'
-" Plug 'zchee/deoplete-clang'
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'zchee/deoplete-clang'
+    let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
+    let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
+    let g:deoplete#sources#clang#flags = [
+          \ "-cc1",
+          \ "-emit-obj",
+          \ "-mrelax-all",
+          \ "-disable-free",
+          \ "-disable-llvm-verifier",
+          \ "-mrelocation-model", "pic",
+          \ "-pic-level", "2",
+          \ "-mthread-model", "posix",
+          \ "-mdisable-fp-elim",
+          \ "-munwind-tables",
+          \ "-target-cpu", "core2",
+          \ "-target-linker-version", "264.3",
+          \ "-dwarf-column-info",
+          \ "-debugger-tuning=lldb",
+          \ "-resource-dir", "/usr/lib/clang/3.7.1",
+          \ "-ferror-limit", "19",
+          \ "-fmessage-length", "213",
+          \ "-stack-protector", "1",
+          \ "-fblocks",
+          \ "-fencode-extended-block-signature",
+          \ "-fmax-type-align=16",
+          \ ]
 Plug 'zchee/deoplete-jedi'
+Plug 'eagletmt/ghcmod-vim'
+Plug 'eagletmt/neco-ghc'
 Plug 'tomtom/tcomment_vim'
 Plug 'jonathanfilip/vim-lucius'
 " Plug 'vim-airline/vim-airline'
@@ -56,11 +84,13 @@ set nowritebackup
 set noswapfile
 set autochdir
 set cursorline
+set cursorcolumn
 set hidden					                " switch between buffers without having to write
 set noerrorbells                            " no beeps
 set nojoinspaces                            " insert two spaces between punctuation on join lines
 set exrc
 set colorcolumn=95
+set iskeyword-=_
 set secure
 set ruler					                " show cursor position all the time
 set backspace=indent,eol,start	            " backspace behave in insert mode
@@ -108,7 +138,7 @@ set mousehide					            " hide mouse on search
 
 set autoindent					            " auto-indentation
 " set smartindent
-" set cindent						        " more strict auto-indentation for c style files
+set cindent						        " more strict auto-indentation for c style files
 set nowrap
 set textwidth=0
 set number					                " show line number
@@ -144,6 +174,7 @@ let g:html_indent_tags = 'li\|p'            " treat li and p like block tags
 let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 " let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
+
 " airline
 " =======
 
@@ -272,3 +303,5 @@ vnoremap K :m '<-2<CR>gv=gv
 " smart cursorline
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline
+
+highlight Comment cterm=italic
