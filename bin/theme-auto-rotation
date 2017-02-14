@@ -61,7 +61,7 @@ set_theme() {
 }
 
 
-if [[ "$1" -eq "light" ]]; then
+if [[ "$1" == "light" ]]; then
     feh --bg-scale "$HOME/$LWALLPAPER"
     # comment dark colors
     sed -i "s/^\s*background $DBACKGROUND/\t\t\t# background $DBACKGROUND/" ~/.config/i3/config
