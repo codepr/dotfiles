@@ -38,6 +38,7 @@ Plug 'eagletmt/ghcmod-vim'
 Plug 'eagletmt/neco-ghc'
 Plug 'tomtom/tcomment_vim'
 Plug 'jonathanfilip/vim-lucius'
+Plug 'arcticicestudio/nord-vim'
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf',    {'do': './install --all'}
@@ -50,7 +51,6 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdtree'
-" " Plug 'tpope/vim-repeat'
 Plug 'benekastah/neomake'
 Plug 'ensime/ensime-vim'
 Plug 'vim-scripts/indentpython.vim'
@@ -62,9 +62,9 @@ call plug#end()
 
 endif
 
-set background=dark
+" set background=light
+" let g:solarized_termcolors=256
 try
-    " colorscheme lucius
     let base16colorspace=256
     source ~/.vimrc_background
 catch
@@ -79,6 +79,7 @@ set t_Co=256					            " 256 color enabled for console
 set ttyfast					                " fast terminal
 set lazyredraw
 set nobackup					            " auto-backup set off
+set synmaxcol=2048                          " prevent huge slowdown from syntax hl
 set inccommand=nosplit
 set nowritebackup
 set noswapfile
@@ -147,7 +148,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab smarttab
-set list listchars=tab:\ \ ,eol:¬           " display tabs and trailing whitespace
+set list listchars=tab:»\ ,eol:¬,nbsp:.,trail:.           " display tabs and trailing whitespace
 
 " Specific languages indentation settings
 " =======================================
@@ -173,6 +174,7 @@ let g:html_indent_tags = 'li\|p'            " treat li and p like block tags
 
 let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+set completeopt-=preview
 " let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
 
 " airline
@@ -267,9 +269,6 @@ inoremap <Right> <NOP>
 " behave like normal up and down
 nnoremap j gj
 nnoremap k gk
-" map space to / (search) and backspace to ? (backward search)
-" map <space> /
-" map <backspace> ?
 " enbale folding with the spacebar
 nnoremap <space> za
 " remap 0 to first non-blank character
@@ -295,6 +294,7 @@ nnoremap <leader>i gg=G``
 nnoremap <leader>, :noh<CR>
 nnoremap <silent> <leader><space> :Files<CR>
 nnoremap <silent> <leader>b :Buffers<CR>
+nnoremap <silent> <leader>f :Ag<CR>
 nmap <leader>d :bd<CR>
 nmap <leader>D :bufdo bd<CR>
 " move selected block around in visual mode
@@ -303,5 +303,14 @@ vnoremap K :m '<-2<CR>gv=gv
 " smart cursorline
 autocmd InsertLeave,WinEnter * set cursorline
 autocmd InsertEnter,WinLeave * set nocursorline
+" nord colorscheme override
+hi Comment cterm=italic
+hi Visual ctermbg=18
+hi CursorLine ctermbg=18
+hi CursorColumn ctermbg=18
+hi StatusLine ctermbg=18
+highlight Search ctermbg=18
 
-highlight Comment cterm=italic
+" Disable haskell-vim omnifunc
+let g:haskellmode_completion_ghc = 0
+autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
