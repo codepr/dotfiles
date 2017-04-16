@@ -8,12 +8,5 @@ $ cd ~/dotfiles && ./install.sh
 
 ### Configurations
 
-- Vim / Neovim configuration
-- TMUX configuration
-- ZSH configuration
-- Keyboard mapping (just caps -> ctrl)
+- Vim configuration
 - .Xresources for i3wm config
-- bin directory containing personal scripts
-    - initialization virtual box
-    - keyboard layout
-    - auto theme-switcher, based on daytime

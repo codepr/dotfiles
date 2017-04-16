@@ -10,7 +10,7 @@
 
 readonly DIR=$(pwd)                     # dotfiles directory
 readonly OLD_DIR=~/dotfiles_old         # old dotfiles backup directory
-readonly FILES="zsh/zshrc vim/vimrc vim oh-my-zsh tmux/tmux.conf eclim/eclimrc Xresources config/nvim/init.vim"
+readonly FILES=$(ls | grep -ve "$(basename $0)" -e README -e pkglist)
 
 # create dotfiles_old in HOMEDIR
 
@@ -18,11 +18,19 @@ echo -n "[*] Creating $OLD_DIR for backup of any existing dotfiles in ~ ..."
 mkdir -p $OLD_DIR
 echo "    done"
 
+echo -n "[*] Installing pacman package list"
+pacman -S - < pkglist
+
+if [ $? -eq 0 ]; then
+    echo " OK"
+else
+    echo " ERROR installing packages with pacman"
+fi
+
+
 # change to the dotfiles directory
 
-echo -n "[*] Changing to the $DIR directory ..."
 cd $DIR
-echo "    done"
 
 create_symlinks() {
     # move any existing dotfiles in homedir to dotfiles_old directory, then create
@@ -30,97 +38,16 @@ create_symlinks() {
     # in $files
     for file in $FILES; do
         echo "[*] Moving any existing dotfiles from ~ to $OLD_DIR"
-        mv ~/.$file $OLD_DIR
-        echo "[*] Creating symlink to $file in home directory."
+        mv ~/.$file $OLD_DIR 2>/dev/null
+        echo -n "[*] Creating symlink to $file in home directory."
         ln -s $DIR/$file ~/.$file
     done
     echo "    done"
 }
 
-# zsh function
-
-install_zsh () {
-    # Test to see if zshell is installed. If it is:
-    if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
-        # Clone my oh-my-zsh repository from GitHub only if it isn't already
-        # present
-        if [[ ! -d $DIR/oh-my-zsh/ ]]; then
-            git clone https://github.com/robbyrussell/oh-my-zsh.git
-        fi
-        # Set the default shell to zsh if it isn't currently set to zsh
-        if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
-            chsh -s $(which zsh)
-        fi
-    else
-        # If zsh isn't installed, get the platform of the current machine
-        platform=$(uname);
-        # If the platform is Linux, try an apt-get (or yum / pacman) to install
-        # zsh and then recurse
-        if [[ $platform == 'Linux' ]]; then
-            if [[ -f /etc/redhat-release ]]; then # redhat distro
-                sudo yum install zsh
-                install_zsh
-            fi
-            if [[ -f /etc/debian_version ]]; then # debian based distro
-                sudo apt-get install zsh
-                install_zsh
-            fi
-            if [[ -f /etc/arch-release ]]; then # arch linux distro
-                sudo pacman -S install zsh
-                install_zsh
-            fi
-        fi
-    fi
-}
-
-install_base16_shell () {
-    git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
-    echo "BASE16_SHELL=$HOME/.config/base16-shell/
-    [ -n \"$PS1\" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval \"$($BASE16_SHELL/profile_helper.sh)\"
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh" >> ~/.zshrc
-}
-
-init_bin () {
-    if [[ ! -d $HOME/bin/ ]]; then
-        mkdir -p $HOME/bin
-    fi
-    cp -r $DIR/bin/* $HOME/bin
-    chmod +x $HOME/bin/*
-}
-
-get_distro () {
-    lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om
-}
-
 main() {
     create_symlinks
-    install_zsh
-    # Copy alias.sh from ~/dotfiles/zsh/ to ~/.oh-my-zsh/lib/
-    cp $DIR/zsh/alias.sh ~/.oh-my-zsh/lib/
-    # initialize ~/bin directory for personal scripts
-    init_bin
-    cp -r $DIR/bin ~/
-    chmod +x ~/bin/*
-    # keyboard layout
-    cp $DIR/kblayout/.xmodmaprc ~/
-    echo -n "[*] Install base16-shell"
-    install_base16_shell
-    case get_distro in
-        "Arch Linux")
-            # move i3 configurations
-            mkdir -p $HOME/.config/i3 && cp $DIR/i3/config $HOME/.config/i3/config
-            mkdir -p $HOME/.config/i3status && cp $DIR/i3status/config $HOME/.config/i3status/config
-            # downlaod Monaco font from AUR
-            wget https://aur.archlinux.org/cgit/aur.git/snapshot/ttf-monaco.tar.gz
-            tar xvf ttf-monaco.tar.gz
-            cd ttf-monaco
-            mkpkg
-            sudo pacman -U ttf-monaco*
-            ;;
-    esac
     xrdb $HOME/.Xresources
-    echo -n "[*] Setting base16-oceanicnext as standard zsh colorscheme"
-    base16-oceanicnext
 }
 
 main"$@"

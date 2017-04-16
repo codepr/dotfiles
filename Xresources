@@ -1,119 +1,74 @@
 xterm*termName: xterm-256color
-xterm*faceName: Source Code Pro:size=9:antialias=true
-! xterm*faceName: Monaco:size=8:antialias=true
-xterm*font: 7x13
+! xterm*faceName: xft:Hack:light:size=9:antialias=true
+xterm*faceName: xft:System San Francisco Display:light:size=9:antialias=true
+! xterm*background: rgb:38/38/48
+! xterm*foreground: rgb:b2/b2/b2
+! xterm*faceName: xft:Terminus:light:size=9:antialias=false
 xterm*borderWidth: 0
 xterm*locale: true
 xterm*metaSendsEscape: true
-! xterm*foreground: rgb:ef/ef/ef
-! xterm*foreground: rgb:aa/aa/aa ! current
-! xterm*background: rgb:08/08/08 ! current
-! xterm*background: [90]#000000
-! xterm*color0: rgb:28/28/28 ! current
 xterm*saveLines: 4096
-Emacs*toolBar: 0
-! transparency
-! urxvt*depth: 32
-! urxvt*background: [90]#000000
-! URxvt.transparent: true
-! Base16 Apathy
-! Scheme: Jannik Siebert (https://github.com/janniks)
 
-! #define base00 #031A16
-! #define base01 #0B342D
-! #define base02 #184E45
-! #define base03 #2B685E
-! #define base04 #5F9C92
-! #define base05 #81B5AC
-! #define base06 #A7CEC8
-! #define base07 #D2E7E4
-! #define base08 #3E9688
-! #define base09 #3E7996
-! #define base0A #3E4C96
-! #define base0B #883E96
-! #define base0C #963E4C
-! #define base0D #96883E
-! #define base0E #4C963E
-! #define base0F #3E965B
-!
-! *.foreground:   base05
-! *.background:   base00
-! *.cursorColor:  base05
-!
-! *.color0:       base00
-! *.color1:       base08
-! *.color2:       base0B
-! *.color3:       base0A
-! *.color4:       base0D
-! *.color5:       base0E
-! *.color6:       base0C
-! *.color7:       base05
-!
-! *.color8:       base03
-! *.color9:       base08
-! *.color10:      base0B
-! *.color11:      base0A
-! *.color12:      base0D
-! *.color13:      base0E
-! *.color14:      base0C
-! *.color15:      base07
-!
-! ! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-! ! use 'shell' template to set these if necessary
-! *.color16:      base09
-! *.color17:      base0F
-! *.color18:      base01
-! *.color19:      base02
-! *.color20:      base04
-! *.color21:      base06
-!
-! Base16 OceanicNext
-! Scheme: https://github.com/voronianski/oceanic-next-color-scheme
+! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+! title      Nord XResources                                    +
+! project    nord-xresources                                    +
+! version    0.1.0                                              +
+! repository https://github.com/arcticicestudio/nord-xresources +
+! author     Arctic Ice Studio                                  +
+! email      development@arcticicestudio.com                    +
+! copyright  Copyright (C) 2016                                 +
+! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#define nord0 #2E3440
+#define nord1 #3B4252
+#define nord2 #434C5E
+#define nord3 #4C566A
+#define nord4 #D8DEE9
+#define nord5 #E5E9F0
+#define nord6 #ECEFF4
+#define nord7 #8FBCBB
+#define nord8 #88C0D0
+#define nord9 #81A1C1
+#define nord10 #5E81AC
+#define nord11 #BF616A
+#define nord12 #D08770
+#define nord13 #EBCB8B
+#define nord14 #A3BE8C
+#define nord15 #B48EAD
 
-#define base00 #1B2B34
-#define base01 #343D46
-#define base02 #4F5B66
-#define base03 #65737E
-#define base04 #A7ADBA
-#define base05 #C0C5CE
-#define base06 #CDD3DE
-#define base07 #D8DEE9
-#define base08 #EC5f67
-#define base09 #F99157
-#define base0A #FAC863
-#define base0B #99C794
-#define base0C #5FB3B3
-#define base0D #6699CC
-#define base0E #C594C5
-#define base0F #AB7967
+*.foreground:   nord4
+*.background:   nord0
+*.cursorColor:  nord4
+*fading: 35
+*fadeColor: nord3
 
-*.foreground:   base05
-*.background:   base00
-*.cursorColor:  base05
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6
 
-*.color0:       base00
-*.color1:       base08
-*.color2:       base0B
-*.color3:       base0A
-*.color4:       base0D
-*.color5:       base0E
-*.color6:       base0C
-*.color7:       base05
-
-*.color8:       base03
-*.color9:       base08
-*.color10:      base0B
-*.color11:      base0A
-*.color12:      base0D
-*.color13:      base0E
-*.color14:      base0C
-*.color15:      base07
-
-! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-! use 'shell' template to set these if necessary
-*.color16:      base09
-*.color17:      base0F
-*.color18:      base01
-*.color19:      base02
-*.color20:      base04
-*.color21:      base06
+! rofi
+rofi.color-window: argb:c82d303b, #7c8389, #1d1f21
+rofi.color-normal: argb:31d1f21, #c4cbd4, argb:96404552, #4084d6, #f9f9f9
+rofi.color-urgent: argb:2c1d1f21, #cc6666, argb:e54b5160, #a54242, #f9f9f9
+rofi.color-active: argb:2c1d1f21, #65acff, argb:e44b5160, #4491ed, #f9f9f9
+rofi.width: 100
+rofi.lines: 5
+rofi.columns: 1
+rofi.font: Hack 14
+rofi.bw: 0
+rofi.padding: 400
+rofi.eh: 1
+!rofi.separator-style: solid
+rofi.hide-scrollbar: true
