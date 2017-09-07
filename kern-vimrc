@@ -1,0 +1,60 @@
+set nocompatible
+filetype plugin indent on
+
+set number
+set tabstop=8
+set softtabstop=8
+set shiftwidth=8
+set noexpandtab
+set nobackup
+set nowb
+set noswapfile
+set path+=**
+set colorcolumn=80
+set ruler
+set showmode
+set autoindent
+set backspace=2
+" set viminfo=%,'50,\"100,:100,n~/.viminfo
+set laststatus=2
+
+" =====================================================================
+" SEARCH
+" =====================================================================
+
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set showmatch
+set mousehide
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+set t_Co=256
+set background=light
+
+map 0 ^
+inoremap jk <esc>
+inoremap kj <esc>
+nnoremap j gj
+nnoremap k gk
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
+
+" =====================================================================
+" STATUSLINE
+" =====================================================================
+set statusline=
+set statusline +=%1*\ %n\ %*            "buffer number
+set statusline +=%5*%{&ff}%*            "file format
+set statusline +=%3*%y%*                "file type
+set statusline +=%4*\ %<%F%*            "full path
+set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%=%5l%*             "current line
+set statusline +=%2*/%L%*               "total lines
+set statusline +=%1*%4v\ %*             "virtual column number

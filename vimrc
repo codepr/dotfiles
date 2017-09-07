@@ -5,6 +5,7 @@ syntax on
 set encoding=utf-8
 set ttyfast
 set lazyredraw
+set synmaxcol=2048                          " prevent huge slowdown from syntax hl
 set number
 set hidden
 set exrc
@@ -22,28 +23,135 @@ set autochdir
 set nobackup
 set nowb
 set noswapfile
+set path+=**
+set textwidth=100
+set colorcolumn=100
 set splitbelow
 set splitright
-set iskeyword-=_
+" set iskeyword-=_
 set relativenumber
-set clipboard=unnamed
-set clipboard^=unnamedplus
+set foldmethod=indent                       " enable folding
+set foldlevel=99
+set fillchars=""
+set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+if has('unnamedplus')
+    set clipboard+=unnamedplus
+else
+    set clipboard+=unnamed
+endif
+
+" =====================================================================
+" PLUGINS
+" =====================================================================
+
+silent! if plug#begin('~/.config/nvim/plugged')
+
+Plug 'altercation/vim-colors-solarized'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'zchee/deoplete-jedi'
+Plug 'benekastah/neomake'
+Plug 'scrooloose/nerdtree'
+Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'majutsushi/tagbar'
+" Plug 'ryanoasis/vim-devicons'
+" Plug 'w0rp/ale'
+" Plug 'python-mode/python-mode'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tomtom/tcomment_vim'
+" Plug 'xolox/vim-easytags'
+" Plug 'Vimjas/vim-python-pep8-indent'
+
+" PYMODE SETTINGS
+" let g:pymode_python = 'python3'
+" let g:pymode_syntax = 1
+" let g:pymode_breakpoint = 0
+" let g:pymode_folding = 0
+" let g:pymode_lint_cwindow = 0
+" let g:pymode_rope_complete_on_dot = 0
+" let g:pymode_options_colorcolumn = 0
+" let g:pymode_options_max_line_length=100
+" [[B]Commits] Customize the options used by 'git log':
+" let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+let g:neomake_python_enabled_makers = ['flake8', 'pylint']
+" E501 is line length of 80 characters
+let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501,E731'], }
+let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=100', '--ignore=E501'], }
+let g:neomake_python_pyling_maker = {'args': ['--ignore=W0108'], }
+let g:neomake_error_sign = {'text': 'E', 'texthl': 'NeomakeErrorSign'}
+let g:neomake_warning_sign = {'text': 'W', 'texthl': 'NeomakeWarningSign'}
+let g:neomake_message_sign = {'text': 'M','texthl': 'NeomakeMessageSign'}
+let g:neomake_info_sign = {'text': 'I', 'texthl': 'NeomakeInfoSign'}
+
+" let g:neomake_warning_sign = {'text': '•'}
+" let g:neomake_error_sign = {'text': '•'}
+" --column: Show column number
+" --line-number: Show line number
+" --no-heading: Do not show file headings in results
+" --fixed-strings: Search term as a literal string
+" --ignore-case: Case insensitive search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+" --color: Search color options
+
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+
+call plug#end()
+
+endif
+
+
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+set completeopt-=preview
+autocmd! BufWritePost * Neomake
 
 " =====================================================================
 " COLORSCHEME
 " =====================================================================
 
-colorscheme nord
+" set background=light
+" colorscheme solarized
+" colorscheme nord
+colorscheme cupertino-light
 
 " =====================================================================
 " FUNCTIONS
 " =====================================================================
+
+function! s:find_root()
+    for vcs in ['.git', '.svn', '.hg']
+        let dir = finddir(vcs.'/..', ';')
+        if !empty(dir)
+            execute 'Files' dir
+            return
+        endif
+    endfor
+    Files
+endfunction
+
+function! s:find_root_r()
+    for vcs in ['.git', '.svn', '.hg']
+        let dir = finddir(vcs.'/..', ';')
+        if !empty(dir)
+            execute 'Find' dir
+            return
+        endif
+    endfor
+    Find
+endfunction
 
 function s:set_cursor_line()
     set cursorline
     hi cursorline cterm=NONE
 endfunction
 
+command! FZFR call s:find_root()
+command! FindR call s:find_root_r()
 autocmd VimEnter * call s:set_cursor_line()
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -80,10 +188,11 @@ set sidescrolloff=15
 set sidescroll=1
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,.git,*.jpg,*.png,*.gif,*.pdf,*.bak	" ctrlp ignore list
 let g:tex_flavor = 'latex'					" latex starting file
+autocmd BufReadPost * if line("'\"") | exe "'\"" | endif
 autocmd BufWritePre * :%s/\s\+$//e			" trim trail whitespace on save
 set wildmenu								" enhanced command line completion
 set wildmode=list:longest					" complete files like a shell
-set noshowmode								" don't show which mode, disabled for airline
+" set noshowmode								" don't show which mode, disabled for airline
 
 
 
@@ -100,9 +209,16 @@ nnoremap j gj
 nnoremap k gk
 nnoremap <leader>i gg=G``
 nnoremap <leader>, :noh<CR>
-nnoremap <leader>f :e **/*
+nmap <leader>t :TagbarToggle<CR>
+" nnoremap <leader>f :e **/*
 map <leader>d :bd<CR>
-nnoremap <leader><Space> :buffers<CR>:buffer<Space>
+map \ :NERDTreeToggle<CR>
+" nnoremap <leader><Space> :buffers<CR>:buffer<Space>
+" nnoremap <silent> <leader><space> :Files<CR>
+nnoremap <silent> <leader><space> :FZFR<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
+nnoremap <silent> <leader>f :Find<CR>
+" nnoremap <silent> <leader>f :FindR<CR>
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
 nnoremap <C-J> <C-W><C-J>
@@ -112,16 +228,31 @@ nnoremap <C-H> <C-W><C-H>
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '>-2<CR>gv=gv
 nnoremap <leader>q gqip
+nnoremap <leader>ll :lopen<cr>
+nnoremap <leader>lc :lclose<cr>
+vmap < <gv
+vmap > >gv
+tnoremap jk <C-\><C-n>
+tnoremap kj <C-\><C-n>
+" nmap <leader><space> :FZF<CR>
+" set rtp+=~/.config/nvim/plugged/fzf/bin/fzf
 
-" hi CursorLine cterm=NONE ctermbg=8
+hi CursorLine cterm=NONE ctermbg=7
+hi CursorLineNr ctermfg=8
 " hi StatusLine cterm=italic ctermbg=7 ctermfg=0
 
 " ====================================================================
 " STATUSLINE
 " ====================================================================
 
-set statusline=\ \%F%m%r%h%w
-set statusline+=%=\ \ \|\ col:\ %c
-set statusline+=\ \ \|\ line:\ %l\/%L
-set statusline+=\ \|\ \buf:\ %n
-set statusline+=\ \|\ %P
+set statusline+=\ %n
+set statusline+=\ \ \%F%m%r%h%w
+set statusline+=%=\ \ %c
+set statusline+=\ \ %l\/%L
+" set statusline+=\ \|\ %P
+set statusline+=\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}
+
+hi statusline ctermfg=8 ctermbg=7
+hi Comment cterm=italic ctermfg=DarkGrey
+hi ColorColumn ctermbg=7
+hi SignColumn ctermbg=7 ctermfg=8

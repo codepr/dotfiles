@@ -1,0 +1,87 @@
+set nocompatible
+filetype plugin indent on
+
+set encoding=utf-8
+set lazyredraw
+set hidden
+set ttyfast
+set number
+set tabstop=4
+set softtabstop=4
+set wildmenu
+set wildmode=list:longest
+set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.pdf,*.psd
+set shiftwidth=4
+set relativenumber
+set noexpandtab
+set nobackup
+set nowb
+set noswapfile
+set path+=**
+set colorcolumn=80
+set ruler
+set noshowmode
+set autoindent
+set backspace=2
+" set viminfo=%,'50,\"100,:100,n~/.viminfo
+set laststatus=2
+
+" =====================================================================
+" SEARCH
+" =====================================================================
+
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set showmatch
+set mousehide
+set scrolloff=4
+set sidescrolloff=15
+set sidescroll=1
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+function s:set_cursor_line()
+    set cursorline
+    hi cursorline cterm=NONE
+endfunction
+
+autocmd VimEnter * call s:set_cursor_line()
+autocmd BufWritePre * %s/\s\+$//e
+
+set t_Co=256
+set background=light
+
+let mapleader = " "
+nnoremap <leader>, :noh<CR>
+nnoremap <leader><Space> :buffers<CR>:buffer<Space>
+map 0 ^
+inoremap jk <esc>
+inoremap kj <esc>
+nnoremap j gj
+nnoremap k gk
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
+vmap < <gv
+vmap > >gv
+
+" =====================================================================
+" STATUSLINE
+" =====================================================================
+set statusline=
+set statusline +=%1*\ %n\ %*            "buffer number
+set statusline +=%5*%{&ff}%*            "file format
+set statusline +=%3*%y%*                "file type
+set statusline +=%4*\ %<%F%*            "full path
+set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%=%5l%*             "current line
+set statusline +=%2*/%L%*               "total lines
+set statusline +=%1*%4v\ %*             "virtual column number
+
+highlight ColorColumn ctermbg=7
