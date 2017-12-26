@@ -1,3 +1,5 @@
+let g:python_host_prog = '/home/andrea/pydev/bin/python'
+let g:python3_host_prog = '/home/andrea/pydev/bin/python'
 set nocompatible
 set t_Co=256
 filetype off
@@ -44,9 +46,9 @@ endif
 " PLUGINS
 " =====================================================================
 
-silent! if plug#begin('~/.config/nvim/plugged')
+if plug#begin('~/.config/nvim/plugged')
 
-Plug 'altercation/vim-colors-solarized'
+Plug 'beigebrucewayne/skull-vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -55,38 +57,18 @@ Plug 'benekastah/neomake'
 Plug 'scrooloose/nerdtree'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'majutsushi/tagbar'
+Plug 'arcticicestudio/nord-vim'
 " Plug 'ryanoasis/vim-devicons'
-" Plug 'w0rp/ale'
-" Plug 'python-mode/python-mode'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tomtom/tcomment_vim'
-" Plug 'xolox/vim-easytags'
-" Plug 'Vimjas/vim-python-pep8-indent'
 
-" PYMODE SETTINGS
-" let g:pymode_python = 'python3'
-" let g:pymode_syntax = 1
-" let g:pymode_breakpoint = 0
-" let g:pymode_folding = 0
-" let g:pymode_lint_cwindow = 0
-" let g:pymode_rope_complete_on_dot = 0
-" let g:pymode_options_colorcolumn = 0
-" let g:pymode_options_max_line_length=100
-" [[B]Commits] Customize the options used by 'git log':
-" let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
 let g:neomake_python_enabled_makers = ['flake8', 'pylint']
 " E501 is line length of 80 characters
 let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501,E731'], }
 let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=100', '--ignore=E501'], }
 let g:neomake_python_pyling_maker = {'args': ['--ignore=W0108'], }
-let g:neomake_error_sign = {'text': 'E', 'texthl': 'NeomakeErrorSign'}
-let g:neomake_warning_sign = {'text': 'W', 'texthl': 'NeomakeWarningSign'}
-let g:neomake_message_sign = {'text': 'M','texthl': 'NeomakeMessageSign'}
-let g:neomake_info_sign = {'text': 'I', 'texthl': 'NeomakeInfoSign'}
 
-" let g:neomake_warning_sign = {'text': '•'}
-" let g:neomake_error_sign = {'text': '•'}
 " --column: Show column number
 " --line-number: Show line number
 " --no-heading: Do not show file headings in results
@@ -113,12 +95,12 @@ autocmd! BufWritePost * Neomake
 " =====================================================================
 " COLORSCHEME
 " =====================================================================
-
 " set background=light
 " colorscheme solarized
 " colorscheme nord
-colorscheme cupertino-light
-
+" colorscheme cupertino-light
+colorscheme moonscape
+" colorscheme skull
 " =====================================================================
 " FUNCTIONS
 " =====================================================================
@@ -234,11 +216,13 @@ vmap < <gv
 vmap > >gv
 tnoremap jk <C-\><C-n>
 tnoremap kj <C-\><C-n>
+" Save read-only files easily
+cmap w!! w !sudo tee > /dev/null %
 " nmap <leader><space> :FZF<CR>
 " set rtp+=~/.config/nvim/plugged/fzf/bin/fzf
 
-hi CursorLine cterm=NONE ctermbg=7
-hi CursorLineNr ctermfg=8
+" hi CursorLine cterm=NONE ctermbg=7
+" hi CursorLineNr ctermfg=8
 " hi StatusLine cterm=italic ctermbg=7 ctermfg=0
 
 " ====================================================================
@@ -252,7 +236,7 @@ set statusline+=\ \ %l\/%L
 " set statusline+=\ \|\ %P
 set statusline+=\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}
 
-hi statusline ctermfg=8 ctermbg=7
 hi Comment cterm=italic ctermfg=DarkGrey
-hi ColorColumn ctermbg=7
-hi SignColumn ctermbg=7 ctermfg=8
+
+match ErrorMsg '\%>120v.\+'
+match ErrorMsg '\s\+$'
