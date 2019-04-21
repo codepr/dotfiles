@@ -1,2 +1,4 @@
 [pylint]
 disable=C0111, C0112, C0103, R0903
+max-args: 8
+max-attributes: 10
