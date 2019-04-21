@@ -22,13 +22,19 @@ Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'
 Plug 'airblade/vim-rooter'
 Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
 Plug 'neovimhaskell/haskell-vim'
-Plug 'wlangstroth/vim-racket'
+" Plug 'elixir-editors/vim-elixir'
+" Plug 'slashmili/alchemist.vim'
+" Plug 'fatih/vim-go'
+" Plug 'zchee/deoplete-go', {'do': 'make'}
+" Plug 'Shougo/deoplete-clangx'
+Plug 'machakann/vim-highlightedyank'
+Plug 'sakhnik/nvim-gdb', { 'do': './install.sh' }
+Plug 'Shougo/echodoc.vim'
 
 call plug#end()
 
@@ -39,24 +45,30 @@ set encoding=utf-8
 set splitbelow
 set splitright
 set autoindent
-set noshowmode
 set hidden
 set updatetime=100
 set scrolloff=4
 set sidescroll=1
 set sidescrolloff=15
+set inccommand=split    " Quicklist preview on replace
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set expandtab
 set smarttab
 set smartindent
+set cino+=(0
 
 " Search
 set incsearch
+set hlsearch
 set ignorecase
 set smartcase
-set gdefault
+set mousehide
+set showmatch
+
+set grepprg=rg\ --vimgrep
+set grepformat^=%f:%l:%c:%m
 
 " Misc
 set number
@@ -135,6 +147,10 @@ nnoremap <A-2> 2gt
 nnoremap <A-3> 3gt
 nnoremap <A-4> 4gt
 nnoremap <A-5> 5gt
+" Very magic by default
+nnoremap ? ?\v
+nnoremap / /\v
+cnoremap %s/ %sm/
 
 if executable('rg')
 	set grepprg=rg\ --no-heading\ --vimgrep
@@ -155,14 +171,10 @@ if executable("rg")
     command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 endif
 
-" Statusline
-" set statusline+=\ %n
-" set statusline+=\ \ \%F%m%r%h%w
-" set statusline+=%=\ \ %c
-" set statusline+=\ \ %l\/%L
+set background=light
 
 let g:lightline = {
-            \ 'colorscheme': 'seoul256',
+            \ 'colorscheme': 'solarized',
             \ 'active': {
             \   'left': [['mode'], ['gitbranch', 'readonly', 'filename', 'modified']]
             \ },
@@ -175,6 +187,10 @@ if filereadable(expand("~/.vimrc_background"))
     let base16colorspace=256
     source ~/.vimrc_background
 endif
+
+set cmdheight=2
+let g:echodoc#enable_at_startup = 1
+let g:echodoc#type = 'signature'
 
 " Deoplete settings
 let g:deoplete#enable_at_startup = 1
@@ -189,13 +205,14 @@ set completeopt-=preview
 let g:deoplete#sources = {}
 let g:deoplete#sources.python = ['LanguageClient']
 let g:deoplete#sources.python3 = ['LanguageClient']
+let g:deoplete#sources.c = ['LanguageClient']
 
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
-            \ 'cpp': ['clangd'],
-            \ 'c': ['/home/andrea/ccls/Release/ccls', '--log-file=/tmp/cc.log'],
             \ 'python': ['/home/andrea/py3.7/bin/pyls'],
             \ 'rust': ['/home/andrea/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+            \ 'c': ['clangd'],
+            \ 'cpp': ['clangd'],
             \ }
 
 set completefunc=LanguageClient#complete
@@ -230,8 +247,11 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 
 " Ale linter signs customization
-let g:ale_sign_error = ''
-let g:ale_sign_warning = ''
+" let g:ale_sign_error = ''
+" let g:ale_sign_warning = ''
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_set_highlights = 1
 
 " Customize Ale colors
 hi ALEErrorSign ctermbg=18 ctermfg=167
@@ -239,3 +259,6 @@ hi ALEWarningSign ctermbg=18 ctermfg=184
 hi ALEError ctermbg=none cterm=underline
 hi ALEWarning ctermbg=none cterm=underline
 hi SignColumn ctermbg=18
+
+
+" let g:deoplete#sources#go#gocode_binary='~/go/bin/gocode'

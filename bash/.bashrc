@@ -39,7 +39,7 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
         eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.npm/bin:$PATH"
 
 # ssh-agent
 # if ! pgrep -u "$USER" ssh-agent > /dev/null; then
@@ -50,3 +50,10 @@ export PATH="$HOME/bin:$PATH"
 # fi
 
 pyd
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[ -f /home/andrea/.npm/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash ] && . /home/andrea/.npm/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[ -f /home/andrea/.npm/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash ] && . /home/andrea/.npm/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash
