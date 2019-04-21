@@ -1,0 +1,2 @@
+[pycodestyle]
+disable=D102, D101, D100, D400

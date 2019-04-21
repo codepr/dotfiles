@@ -1,0 +1,197 @@
+[colors]
+
+background = #fdf6e3
+;#101010
+;#2b303b
+;background-alt = #e0e0e0e0
+;foreground = #c0c5ce
+foreground = #839496
+;foreground-alt= #777
+foreground-alt = #839496
+linecolor = #fb2e22
+bordercolor = #555
+;accent = #e60053
+;accent = #c0c5ce
+accent = #839496
+
+;background = #2f343f
+;background-alt = #4f545f
+;foreground = #d8dee8
+;foreground-alt = #787e68
+;accent = #81a1c1
+;alert = #ebcb8b
+
+
+[bar/top]
+
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
+tray-position = right
+tray-padding = 4
+tray-maxsize = 16
+enable-ipc = true
+monitor = ${env:MONITOR}
+height = 20
+radius = 0.0
+line-size = 2.5
+fixed-center = true
+background = ${colors.background}
+foreground = ${colors.accent}
+padding-left = 0
+padding-right = 4
+module-margin-left = 2
+module-margin-right = 5
+;font-0 = Noto Sans:pixelsize=8
+;font-1 = "Font Awesome 5 Free":pixelsize=8
+font-0 = FontAwesome5Free:style=Solid:pixelsize=9
+font-1 = FontAwesome5Brands:style=Solid:pixelsize=9
+;tray-position = right
+;tray-padding = 2
+;tray-background = ${colors.background}
+wm-restack = i3
+;override-redirect = true
+modules-left = i3
+modules-center = date
+modules-right = volume battery wlan
+
+
+[module/i3]
+
+type = internal/i3
+pin-workspaces = true
+strip-wsnumbers = true
+index-sort = false
+enable-click = true
+enable-scroll = true
+wrapping-scroll = false
+reverse-scroll = false
+fuzzy-match = false
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-5 = 6;
+ws-icon-6 = 7;
+ws-icon-7 = 8;
+ws-icon-8 = 9;
+
+
+format = <label-state> <label-mode>
+
+label-mode = %mode%
+label-mode-padding = 5
+label-mode-background = #fdf6e300
+;#00000000
+
+label-active = %name%
+label-active-padding = 5
+label-active-underline = #3e2eff
+
+label-focused = %name%
+label-focused-foreground = #839496
+;#c0c5ce
+label-focused-background = #fdf6e3
+;#101010
+label-focused-underline = #c0c5ce
+label-focused-padding = 5
+
+label-unfocused = %name%
+label-unfocused-padding = 5
+label-unfocused-foreground = #dfdfdf
+label-unfocused-background = #fdf6e3
+;#101010
+;#2b303b
+
+label-visible = %name%
+;label-visible-underline = #3e2eff
+label-visible-padding = 5
+
+;label-urgent = %name%
+;label-urgent-foreground = #000000
+;label-urgent-background = #bd2c40
+;label-urgent-padding = 5
+
+; Separator in between workspaces
+;label-separator = |
+;label-separator-padding = 0
+;label-separator-foreground = #ffb52a
+
+
+[module/xwindow]
+
+type = internal/xwindow
+;label = %title:0:48:...%
+label = %title%
+label-maxlen = 50
+
+
+[module/wlan]
+
+type = internal/network
+interface = wlp2s0
+interval = 15
+format-connected = <label-connected>
+label-connected = %essid%
+format-disconnected = <label-disconnected>
+label-disconnected =   Disconnected
+label-disconnected-foreground = ${colors.foreground-alt}
+ramp-signal-0 = 
+ramp-signal-1 =  
+ramp-signal-2 =  
+ramp-signal-3 =  
+ramp-signal-4 =  
+ramp-signal-5 =  
+ramp-signal-foreground = ${colors.accent}
+
+
+[module/volume]
+
+type = internal/volume
+format-volume = <label-volume> <bar-volume>
+label-volume = " "
+label-volume-foreground = ${colors.accent}
+format-muted-prefix = " "
+format-muted-foreground = ${colors.accent}
+label-muted = Muted
+label-muted-foreground= ${colors.foreground-alt}
+bar-volume-width = 6
+bar-volume-indicator = 
+bar-volume-fill = ─
+bar-volume-empty = ─
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+
+[module/battery]
+
+type = internal/battery
+full-at = 98
+battery = BAT1
+adapter = ACAD
+poll-interval = 60
+format-charging = <label-charging>
+label-charging =  %percentage%%
+label-full =  %percentage%%
+format-discharging = <ramp-capacity>  <label-discharging>
+label-discharging = %percentage%%
+ramp-capacity-0 = 
+ramp-capacity-0-foreground = #f53c3c
+ramp-capacity-1 = 
+ramp-capacity-1-foreground = #ffa900
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-foreground = ${colors.accent}
+
+
+[module/date]
+
+type = internal/date
+interval = 5
+label = " %date% %time%"
+date = "%a %d"
+;date-alt = %a %b %d
+time = %H.%M
+;time-alt = %H:%M%p
+format-prefix =
+format-prefix-foreground = ${colors.accent}
