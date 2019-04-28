@@ -18,6 +18,8 @@ Plug 'chriskempson/base16-vim'
 Plug 'w0rp/ale'
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
@@ -27,6 +29,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'wlangstroth/vim-racket.git'
+Plug 'jpalardy/vim-slime'
 " Plug 'elixir-editors/vim-elixir'
 " Plug 'slashmili/alchemist.vim'
 " Plug 'fatih/vim-go'
@@ -81,6 +85,7 @@ set laststatus=2
 set showcmd
 set autoread
 set cursorline
+set colorcolumn=80
 set wildmenu
 set wildmode=list:longest
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.pdf,*.psd
@@ -187,6 +192,33 @@ if filereadable(expand("~/.vimrc_background"))
     let base16colorspace=256
     source ~/.vimrc_background
 endif
+
+let g:slime_target = "neovim"
+
+
+" Neosnippet
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
 
 set cmdheight=2
 let g:echodoc#enable_at_startup = 1
