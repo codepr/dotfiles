@@ -1,18 +1,25 @@
 [colors]
 
-background = #fdf6e3
+background = #222
+background-alt = #444
+foreground = #dfdfdf
+foreground-alt = #888
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+;background = #fdf6e3
 ;#101010
 ;#2b303b
 ;background-alt = #e0e0e0e0
 ;foreground = #c0c5ce
-foreground = #839496
+;foreground = #839496
 ;foreground-alt= #777
-foreground-alt = #839496
-linecolor = #fb2e22
-bordercolor = #555
+;foreground-alt = #839496
+;linecolor = #fb2e22
+;bordercolor = #555
 ;accent = #e60053
 ;accent = #c0c5ce
-accent = #839496
+;accent = #839496
 
 ;background = #2f343f
 ;background-alt = #4f545f
@@ -34,9 +41,9 @@ monitor = ${env:MONITOR}
 height = 20
 radius = 0.0
 line-size = 2.5
-fixed-center = true
+fixed-center = false
 background = ${colors.background}
-foreground = ${colors.accent}
+foreground = ${colors.foreground}
 padding-left = 0
 padding-right = 4
 module-margin-left = 2
@@ -66,15 +73,15 @@ enable-scroll = true
 wrapping-scroll = false
 reverse-scroll = false
 fuzzy-match = false
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-5 = 6;
-ws-icon-6 = 7;
-ws-icon-7 = 8;
-ws-icon-8 = 9;
+ws-icon-0 = 1
+ws-icon-1 = 2
+ws-icon-2 = 3
+ws-icon-3 = 4
+ws-icon-4 = 5
+ws-icon-5 = 6
+ws-icon-6 = 7
+ws-icon-7 = 8
+ws-icon-8 = 9
 
 
 format = <label-state> <label-mode>
@@ -89,17 +96,17 @@ label-active-padding = 5
 label-active-underline = #3e2eff
 
 label-focused = %name%
-label-focused-foreground = #839496
+label-focused-foreground = ${colors.foreground}
 ;#c0c5ce
-label-focused-background = #fdf6e3
+label-focused-background = ${colors.background}
 ;#101010
 label-focused-underline = #c0c5ce
 label-focused-padding = 5
 
 label-unfocused = %name%
 label-unfocused-padding = 5
-label-unfocused-foreground = #dfdfdf
-label-unfocused-background = #fdf6e3
+label-unfocused-foreground = #555
+label-unfocused-background = ${colors.background}
 ;#101010
 ;#2b303b
 
@@ -121,7 +128,7 @@ label-visible-padding = 5
 [module/xwindow]
 
 type = internal/xwindow
-;label = %title:0:48:...%
+;label = %title:0:30:...%
 label = %title%
 label-maxlen = 50
 
@@ -142,7 +149,7 @@ ramp-signal-2 =  
 ramp-signal-3 =  
 ramp-signal-4 =  
 ramp-signal-5 =  
-ramp-signal-foreground = ${colors.accent}
+ramp-signal-foreground = ${colors.foreground}
 
 
 [module/volume]
@@ -150,9 +157,9 @@ ramp-signal-foreground = ${colors.accent}
 type = internal/volume
 format-volume = <label-volume> <bar-volume>
 label-volume = " "
-label-volume-foreground = ${colors.accent}
+label-volume-foreground = ${colors.foreground}
 format-muted-prefix = " "
-format-muted-foreground = ${colors.accent}
+format-muted-foreground = ${colors.foreground}
 label-muted = Muted
 label-muted-foreground= ${colors.foreground-alt}
 bar-volume-width = 6
@@ -181,7 +188,7 @@ ramp-capacity-1-foreground = #ffa900
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
-ramp-capacity-foreground = ${colors.accent}
+ramp-capacity-foreground = ${colors.foreground}
 
 
 [module/date]
@@ -194,4 +201,4 @@ date = "%a %d"
 time = %H.%M
 ;time-alt = %H:%M%p
 format-prefix =
-format-prefix-foreground = ${colors.accent}
+format-prefix-foreground = ${colors.foreground}

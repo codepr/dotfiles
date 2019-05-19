@@ -29,7 +29,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
 Plug 'neovimhaskell/haskell-vim'
-Plug 'wlangstroth/vim-racket.git'
+Plug 'wlangstroth/vim-racket'
 Plug 'jpalardy/vim-slime'
 " Plug 'elixir-editors/vim-elixir'
 " Plug 'slashmili/alchemist.vim'
@@ -50,6 +50,7 @@ set splitbelow
 set splitright
 set autoindent
 set hidden
+set nojoinspaces
 set updatetime=100
 set scrolloff=4
 set sidescroll=1
@@ -141,6 +142,11 @@ nnoremap <C-j> <C-w><C-j>
 nnoremap <C-k> <C-w><C-k>
 nnoremap <C-l> <C-w><C-l>
 nnoremap <C-h> <C-w><C-h>
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
 vmap < <gv
 vmap > >gv
 tnoremap jk <C-\><C-n>
@@ -176,17 +182,23 @@ if executable("rg")
     command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 endif
 
-set background=light
+set background=dark
 
 let g:lightline = {
-            \ 'colorscheme': 'solarized',
+            \ 'colorscheme': 'seoul256',
             \ 'active': {
             \   'left': [['mode'], ['gitbranch', 'readonly', 'filename', 'modified']]
             \ },
             \ 'component_function': {
-            \   'gitbranch': 'fugitive#head'
+            \   'gitbranch': 'fugitive#head',
+            \   'filename': 'LightlineFilename',
             \ },
             \ }
+
+function! LightlineFilename()
+  return expand('%:t') !=# '' ? @% : '[No Name]'
+endfunction
+
 
 if filereadable(expand("~/.vimrc_background"))
     let base16colorspace=256
@@ -272,6 +284,7 @@ let g:cabal_indent_section = 2
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
 
 " ALE
 " let g:ale_set_highlights = 0
