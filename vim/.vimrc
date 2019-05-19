@@ -51,7 +51,7 @@ set splitright
 set autoindent
 set hidden
 set nojoinspaces
-set updatetime=100
+set updatetime=300
 set scrolloff=4
 set sidescroll=1
 set sidescrolloff=15
@@ -86,7 +86,7 @@ set laststatus=2
 set showcmd
 set autoread
 set cursorline
-set colorcolumn=80
+set colorcolumn=79
 set wildmenu
 set wildmode=list:longest
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.pdf,*.psd
@@ -304,6 +304,17 @@ hi ALEWarningSign ctermbg=18 ctermfg=184
 hi ALEError ctermbg=none cterm=underline
 hi ALEWarning ctermbg=none cterm=underline
 hi SignColumn ctermbg=18
+
+set diffopt+=iwhite
+set diffopt+=algorithm:patience
+set diffopt+=indent-heuristic
+
+" Activate Quicklist buffer automatically after vimgrep
+augroup grep
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost l*    lwindow
+augroup END
 
 
 " let g:deoplete#sources#go#gocode_binary='~/go/bin/gocode'
