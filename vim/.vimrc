@@ -12,33 +12,16 @@ Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tomtom/tcomment_vim'
 Plug 'mhinz/vim-grepper'
-Plug 'plasticboy/vim-markdown'
 Plug 'logico-dev/typewriter'
 Plug 'chriskempson/base16-vim'
 Plug 'w0rp/ale'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-unimpaired'
-Plug 'airblade/vim-rooter'
 Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
-Plug 'neovimhaskell/haskell-vim'
-Plug 'wlangstroth/vim-racket'
-Plug 'jpalardy/vim-slime'
-" Plug 'elixir-editors/vim-elixir'
-" Plug 'slashmili/alchemist.vim'
-" Plug 'fatih/vim-go'
-" Plug 'zchee/deoplete-go', {'do': 'make'}
-" Plug 'Shougo/deoplete-clangx'
 Plug 'machakann/vim-highlightedyank'
-Plug 'sakhnik/nvim-gdb', { 'do': './install.sh' }
-Plug 'Shougo/echodoc.vim'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
 
 call plug#end()
 
@@ -52,6 +35,7 @@ set autoindent
 set hidden
 set nojoinspaces
 set updatetime=300
+set shortmess+=c
 set scrolloff=4
 set sidescroll=1
 set sidescrolloff=15
@@ -163,6 +147,40 @@ nnoremap ? ?\v
 nnoremap / /\v
 cnoremap %s/ %sm/
 
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 if executable('rg')
 	set grepprg=rg\ --no-heading\ --vimgrep
 	set grepformat=%f:%l:%c:%m
@@ -184,6 +202,10 @@ endif
 
 set background=dark
 
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
 let g:lightline = {
             \ 'colorscheme': 'seoul256',
             \ 'active': {
@@ -192,6 +214,8 @@ let g:lightline = {
             \ 'component_function': {
             \   'gitbranch': 'fugitive#head',
             \   'filename': 'LightlineFilename',
+            \   'cocstatus': 'coc#status',
+            \   'currentfunction': 'CocCurrentFunction'
             \ },
             \ }
 
@@ -205,98 +229,36 @@ if filereadable(expand("~/.vimrc_background"))
     source ~/.vimrc_background
 endif
 
-let g:slime_target = "neovim"
-
-
-" Neosnippet
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
 
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_conceal = 0
-
 set cmdheight=2
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'signature'
 
-" Deoplete settings
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
-let b:deoplete_disable_auto_complete = 1
-let g:deoplete_disable_auto_complete = 1
-
-inoremap <expr><tab> pumvisible() ? "\<c-n>": "\<tab>"
-inoremap <expr><S-tab> pumvisible() ? "\<c-p>" : "\<S-tab>"
-set completeopt-=preview
-
-let g:deoplete#sources = {}
-let g:deoplete#sources.python = ['LanguageClient']
-let g:deoplete#sources.python3 = ['LanguageClient']
-let g:deoplete#sources.c = ['LanguageClient']
-
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_serverCommands = {
-            \ 'python': ['/home/andrea/py3.7/bin/pyls'],
-            \ 'rust': ['/home/andrea/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-            \ 'c': ['clangd'],
-            \ 'cpp': ['clangd'],
-            \ }
-
-set completefunc=LanguageClient#complete
-
-let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
-let g:LanguageClient_settingsPath = '/home/andrea/.config/nvim/settings.json'
-" https://github.com/autozimu/LanguageClient-neovim/issues/379 LSP snippet is not supported
-let g:LanguageClient_hasSnippetSupport = 0
-
-
-let g:haskell_classic_highlighting = 1
-let g:haskell_indent_if = 3
-let g:haskell_indent_case = 2
-let g:haskell_indent_let = 4
-let g:haskell_indent_where = 6
-let g:haskell_indent_before_where = 2
-let g:haskell_indent_after_bare_where = 2
-let g:haskell_indent_do = 3
-let g:haskell_indent_in = 1
-let g:haskell_indent_guard = 2
-let g:haskell_indent_case_alternative = 1
-let g:cabal_indent_section = 2
-
-
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
-
 " ALE
-" let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
+highlight link ALEWarningSign Todo
+highlight link ALEErrorSign WarningMsg
+highlight link ALEVirtualTextWarning Todo
+highlight link ALEVirtualTextInfo Todo
+highlight link ALEVirtualTextError WarningMsg
+highlight ALEError guibg=None
+highlight ALEWarning guibg=None
+let g:ale_sign_error = "◉"
+let g:ale_sign_warning = "◉"
+" let g:ale_sign_error = "✖"
+" let g:ale_sign_warning = "⚠"
+" let g:ale_sign_info = "i"
+" let g:ale_sign_hint = "➤"
 
 " Ale linter signs customization
-" let g:ale_sign_error = ''
-" let g:ale_sign_warning = ''
-let g:ale_sign_error = '✘'
-let g:ale_sign_warning = '⚠'
-let g:ale_set_highlights = 1
+" let g:ale_sign_error = '✘'
+" let g:ale_sign_warning = '⚠'
+" let g:ale_set_highlights = 1
 
 " Customize Ale colors
 hi ALEErrorSign ctermbg=18 ctermfg=167
@@ -315,6 +277,3 @@ augroup grep
     autocmd QuickFixCmdPost [^l]* cwindow
     autocmd QuickFixCmdPost l*    lwindow
 augroup END
-
-
-" let g:deoplete#sources#go#gocode_binary='~/go/bin/gocode'
