@@ -99,6 +99,7 @@ set mousehide
 set showmode
 " set showmatch
 set grepformat^=%f:%l:%c:%m
+set formatoptions+=cro
 " Misc
 set number
 set relativenumber
