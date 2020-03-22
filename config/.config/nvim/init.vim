@@ -23,6 +23,9 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'fatih/vim-go'
+Plug 'jiangmiao/auto-pairs'
+Plug 'rust-lang/rust.vim'
+Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
@@ -56,9 +59,6 @@ set ignorecase
 set smartcase
 set mousehide
 set showmatch
-
-set grepprg=rg\ --vimgrep
-set grepformat^=%f:%l:%c:%m
 
 " Misc
 set number
@@ -155,6 +155,8 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-reference)
+" Use <c-.> to trigger completion.
+map <silent><expr> <c-.> coc#refresh()
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -184,11 +186,6 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-if executable('rg')
-        set grepprg=rg\ --no-heading\ --vimgrep
-        set grepformat=%f:%l:%c:%m
-endif
-
 if executable("rg")
     " --column: Show column number
     " --line-number: Show line number
@@ -201,16 +198,20 @@ if executable("rg")
     " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
     " --color: Search color options
     command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+    set grepprg=rg\ --no-heading\ --vimgrep
+    set grepformat=%f:%l:%c:%m
 endif
 
-set background=light
+set background=dark
+
+colorscheme nord
 
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
 
 let g:lightline = {
-            \ 'colorscheme': 'PaperColor',
+            \ 'colorscheme': 'seoul256',
             \ 'active': {
             \   'left': [['mode'], ['gitbranch', 'readonly', 'filename', 'modified']]
             \ },
@@ -226,10 +227,10 @@ function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
 
-if filereadable(expand("~/.vimrc_background"))
-    let base16colorspace=256
-    source ~/.vimrc_background
-endif
+"if filereadable(expand("~/.vimrc_background"))
+"    let base16colorspace=256
+"    source ~/.vimrc_background
+"endif
 
 " For conceal markers.
 if has('conceal')
@@ -251,6 +252,12 @@ highlight ALEError guibg=None
 highlight ALEWarning guibg=None
 let g:ale_sign_error = "◉"
 let g:ale_sign_warning = "◉"
+
+let g:ale_cpp_ccls_init_options = {
+            \   'cache': {
+            \       'directory': '/tmp/ccls/cache'
+            \   }
+            \ }
 
 " Customize Ale colors
 hi ALEErrorSign ctermbg=18 ctermfg=167
@@ -340,3 +347,5 @@ let g:netrw_altv = 1
 
 " vim-go
 let g:go_def_mapping_enabled = 0
+
+au Filetype rust set colorcolumn=100

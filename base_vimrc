@@ -1,0 +1,207 @@
+if &compatible
+	set nocompatible
+endif
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+set completeopt+=longest,menuone,noselect,noinsert,preview
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+syntax on
+
+if has('termguicolors')
+  set termguicolors
+endif
+
+
+if has("autocmd")
+    au CursorHold,CursorHoldI * checktime
+    au BufWritePre * :%s/\s\+$//e   " Trim trail whitespace on save
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it when the position is invalid or when inside an event handler
+    " (happens when dropping a file on gvim).
+    autocmd BufReadPost *
+      \ if line("'\"") > 0 && line("'\"") <= line("$") |
+      \   exe "normal g`\"" |
+      \ endif
+
+    " Don't preserve a buffer when reading from stdin
+    " This is useful for "git diff | vim -"
+    autocmd StdinReadPost * setlocal buftype=nofile
+endif
+
+call plug#begin('~/.local/share/nvim/plugged')
+Plug 'arzg/vim-substrata'
+Plug 'arcticicestudio/nord-vim'
+Plug 'dense-analysis/ale'
+Plug 'fatih/vim-go'
+if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+" do not forget to install jedi
+Plug 'deoplete-plugins/deoplete-jedi'
+call plug#end()
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+set completeopt-=preview
+
+" ALE
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+highlight link ALEWarningSign Todo
+highlight link ALEErrorSign WarningMsg
+highlight link ALEVirtualTextWarning Todo
+highlight link ALEVirtualTextInfo Todo
+highlight link ALEVirtualTextError WarningMsg
+highlight ALEError guibg=None
+highlight ALEWarning guibg=None
+let g:ale_sign_error = "◉"
+let g:ale_sign_warning = "◉"
+let g:ale_linters = {
+            \ 'go': ['gopls'],
+            \}
+
+set t_Co=256
+set exrc
+set backspace=indent,eol,start
+set encoding=utf-8
+set splitbelow
+set splitright
+set autoindent
+set hidden
+set nojoinspaces
+set updatetime=300
+set shortmess+=c
+set scrolloff=4
+set sidescroll=1
+set sidescrolloff=15
+set inccommand=split    " Quicklist preview on replace
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set expandtab
+set smarttab
+set smartindent
+set cino+=(0
+set comments=sl:/*,mb:\ *,elx:\ */
+
+" search
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set mousehide
+set showmode
+" set showmatch
+set grepformat^=%f:%l:%c:%m
+" Misc
+set number
+set relativenumber
+set ruler
+set ttyfast
+set lazyredraw
+set synmaxcol=2048
+set laststatus=2
+set showcmd
+set autoread
+" set cursorline
+" set colorcolumn=79
+set wildmenu
+set wildmode=list:longest
+set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.pdf,*.psd
+" set autochdir
+set nobackup
+set nowb
+set noswapfile
+set path+=**
+if has('unnamedplus')
+    set clipboard+=unnamedplus
+else
+    set clipboard+=unnamed
+endif
+set undofile  " Maintain undo history between sessions
+set undodir=~/.config/nvim/undodir
+
+au BufNewFile,BufRead *.md     set filetype=markdown softtabstop=4 shiftwidth=4
+
+let mapleader="\<Space>"
+map 0 ^
+nnoremap ]q :cn<CR>
+nnoremap [q :cp<CR>
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
+  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+nnoremap j gj
+nnoremap k gk
+nnoremap <TAB> :bnext<CR>
+nnoremap <S-TAB> :bprev<CR>
+inoremap jk <ESC>
+inoremap kj <ESC>
+nnoremap <leader>d :bdel<CR>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>, :noh<CR>
+nnoremap <leader>i gg=G``
+nnoremap <C-j> <C-w><C-j>
+nnoremap <C-k> <C-w><C-k>
+nnoremap <C-l> <C-w><C-l>
+nnoremap <C-h> <C-w><C-h>
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+vmap < <gv
+vmap > >gv
+tnoremap jk <C-\><C-n>
+tnoremap kj <C-\><C-n>
+nmap <Left> :vertical resize -1<CR>
+nmap <Right> :vertical resize +1<CR>
+nnoremap <A-1> 1gt
+nnoremap <A-2> 2gt
+nnoremap <A-3> 3gt
+nnoremap <A-4> 4gt
+nnoremap <A-5> 5gt
+" Very magic by default
+nnoremap ? ?\v
+nnoremap / /\v
+cnoremap %s/ %sm/
+
+command! MakeTags !ctags -R
+
+set diffopt+=iwhite
+set diffopt+=algorithm:patience
+set diffopt+=indent-heuristic
+" Activate Quicklist buffer automatically after vimgrep
+augroup grep
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost l*    lwindow
+augroup END
+
+set background=dark
+colorscheme nord
+
+hi User1 ctermfg=green ctermbg=black
+hi User2 ctermfg=yellow ctermbg=black
+hi User3 ctermfg=red ctermbg=black
+hi User4 ctermfg=blue ctermbg=black
+hi User5 ctermfg=white ctermbg=black
+
+set statusline=
+set statusline +=%1*\ %n\ %*            "buffer number
+set statusline +=%5*%{&ff}%*            "file format
+set statusline +=%3*%y%*                "file type
+set statusline +=%4*\ %<%F%*            "full path
+set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%=%5l%*             "current line
+set statusline +=%2*/%L%*               "total lines
+set statusline +=%1*%4v\ %*             "virtual column number
+set statusline +=%2*0x%04B\ %*          "character under cursor
