@@ -1,34 +1,75 @@
 if &compatible
 	set nocompatible
 endif
-filetype off
-syntax on
+filetype plugin on
 
+" External plugins
 call plug#begin('~/.local/share/nvim/plugged')
 
+" General utility
+Plug 'godlygeek/tabular'
+Plug 'tomtom/tcomment_vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'machakann/vim-highlightedyank'
+
+" Autocompletion + linting
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'dense-analysis/ale'
+Plug 'jiangmiao/auto-pairs'
+
+" Language specifics
+Plug 'fatih/vim-go'
+Plug 'rust-lang/rust.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'Vimjas/vim-python-pep8-indent'
+
+" Navigation
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
-Plug 'tomtom/tcomment_vim'
-Plug 'mhinz/vim-grepper'
-Plug 'chriskempson/base16-vim'
-Plug 'dense-analysis/ale'
-Plug 'Vimjas/vim-python-pep8-indent'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
-Plug 'airblade/vim-gitgutter'
-Plug 'airblade/vim-rooter'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'itchyny/lightline.vim'
-Plug 'machakann/vim-highlightedyank'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'fatih/vim-go'
-Plug 'jiangmiao/auto-pairs'
-Plug 'rust-lang/rust.vim'
+
+" Colorschemes
+Plug 'nightsense/snow'
 Plug 'arcticicestudio/nord-vim'
+Plug 'vim-scripts/Cleanroom'
 
 call plug#end()
 
+set omnifunc=syntaxcomplete#Complete
+set completeopt+=longest,menuone,noselect,noinsert,preview
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+syntax on
+
+if has('termguicolors')
+  set termguicolors
+endif
+
+let g:go_rename_command = 'gopls'
+
+" ALE linting settings
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+highlight link ALEWarningSign Todo
+highlight link ALEErrorSign WarningMsg
+highlight link ALEVirtualTextWarning Todo
+highlight link ALEVirtualTextInfo Todo
+highlight link ALEVirtualTextError WarningMsg
+highlight ALEError guibg=None
+highlight ALEWarning guibg=None
+" let g:ale_sign_error = "◉"
+" let g:ale_sign_warning = "◉"
+let g:ale_fixers = {
+            \   'rust': ['rustfmt'],
+            \   'go': ['gopls'],
+            \}
+
+let g:ale_linters = {
+            \'rust': ['rust-analyzer'],
+            \'go': ['gopls'],
+            \}
+let g:rustfmt_autosave = 1
+
+" Editor behaviour and sane defaults
 set t_Co=256
 set exrc
 set backspace=indent,eol,start
@@ -51,16 +92,20 @@ set expandtab
 set smarttab
 set smartindent
 set cino+=(0
+set comments=sl:/*,mb:\ *,elx:\ */
 
-" search
+" Editor search defaults
 set incsearch
 set hlsearch
 set ignorecase
 set smartcase
 set mousehide
-set showmatch
+set showmode
+" set showmatch
+set grepformat^=%f:%l:%c:%m
+set formatoptions+=cro
 
-" Misc
+" Editor misc
 set number
 set relativenumber
 set ruler
@@ -70,12 +115,12 @@ set synmaxcol=2048
 set laststatus=2
 set showcmd
 set autoread
-set cursorline
-set colorcolumn=79
+" set cursorline
+" set colorcolumn=79
 set wildmenu
 set wildmode=list:longest
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.pdf,*.psd
-set autochdir
+" set autochdir
 set nobackup
 set nowb
 set noswapfile
@@ -102,12 +147,23 @@ if has("autocmd")
     " Don't preserve a buffer when reading from stdin
     " This is useful for "git diff | vim -"
     autocmd StdinReadPost * setlocal buftype=nofile
-
+    autocmd BufNewFile,BufRead *.md set filetype=markdown softtabstop=4 shiftwidth=4
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+    autocmd Filetype rust set colorcolumn=100
 endif
 
 " Mapping
 let mapleader="\<Space>"
 map 0 ^
+nnoremap ]q :cn<CR>
+nnoremap [q :cp<CR>
+"inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+"  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+"
+"inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
+"  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+nnoremap <leader>c *``cgn
 nnoremap j gj
 nnoremap k gk
 nnoremap <TAB> :bnext<CR>
@@ -118,13 +174,12 @@ nnoremap <leader><Space> :Files<CR>
 nnoremap <leader>p :GFiles<CR>
 nnoremap <leader>` :Marks<CR>
 nnoremap <leader>f :Find<CR>
+nnoremap <leader>g :GFind<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>d :bdel<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>, :noh<CR>
 nnoremap <leader>i gg=G``
-nnoremap <leader>l :BLines<CR>
-nnoremap <leader>L :Lines<CR>
 nnoremap <C-j> <C-w><C-j>
 nnoremap <C-k> <C-w><C-k>
 nnoremap <C-l> <C-w><C-l>
@@ -150,7 +205,7 @@ nnoremap ? ?\v
 nnoremap / /\v
 cnoremap %s/ %sm/
 
-" Remap keys for gotos
+" Remap keys for CoC gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
@@ -184,92 +239,24 @@ endfunction
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
+command! MakeTags !ctags -R
 if executable("rg")
-    " --column: Show column number
-    " --line-number: Show line number
-    " --no-heading: Do not show file headings in results
-    " --fixed-strings: Search term as a literal string
-    " --ignore-case: Case insensitive search
-    " --no-ignore: Do not respect .gitignore, etc...
-    " --hidden: Search hidden files and folders
-    " --follow: Follow symlinks
-    " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-    " --color: Search color options
-    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-    set grepprg=rg\ --no-heading\ --vimgrep
-    set grepformat=%f:%l:%c:%m
+    command! -bang -nargs=* Find
+                \ call fzf#vim#grep(
+                \   'rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1,
+                \ fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}), <bang>0)
 endif
 
-set background=dark
-
-colorscheme nord
-
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-
-let g:lightline = {
-            \ 'colorscheme': 'seoul256',
-            \ 'active': {
-            \   'left': [['mode'], ['gitbranch', 'readonly', 'filename', 'modified']]
-            \ },
-            \ 'component_function': {
-            \   'gitbranch': 'fugitive#head',
-            \   'filename': 'LightlineFilename',
-            \   'cocstatus': 'coc#status',
-            \   'currentfunction': 'CocCurrentFunction'
-            \ },
-            \ }
-
-function! LightlineFilename()
-  return expand('%:t') !=# '' ? @% : '[No Name]'
-endfunction
-
-"if filereadable(expand("~/.vimrc_background"))
-"    let base16colorspace=256
-"    source ~/.vimrc_background
-"endif
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-
-let g:echodoc#enable_at_startup = 1
-let g:echodoc#type = 'signature'
-
-" ALE
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
-highlight link ALEWarningSign Todo
-highlight link ALEErrorSign WarningMsg
-highlight link ALEVirtualTextWarning Todo
-highlight link ALEVirtualTextInfo Todo
-highlight link ALEVirtualTextError WarningMsg
-highlight ALEError guibg=None
-highlight ALEWarning guibg=None
-let g:ale_sign_error = "◉"
-let g:ale_sign_warning = "◉"
-
-let g:ale_cpp_ccls_init_options = {
-            \   'cache': {
-            \       'directory': '/tmp/ccls/cache'
-            \   }
-            \ }
-
-" Customize Ale colors
-hi ALEErrorSign ctermbg=18 ctermfg=167
-hi ALEWarningSign ctermbg=18 ctermfg=184
-hi ALEError ctermbg=none cterm=underline
-hi ALEWarning ctermbg=none cterm=underline
-hi SignColumn ctermbg=18
+command! -bang -nargs=* GFind
+            \ call fzf#vim#grep(
+            \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+            \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+command! -bang -nargs=? -complete=dir Files
+            \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
 
 set diffopt+=iwhite
 set diffopt+=algorithm:patience
 set diffopt+=indent-heuristic
-
 " Activate Quicklist buffer automatically after vimgrep
 augroup grep
     autocmd!
@@ -277,75 +264,58 @@ augroup grep
     autocmd QuickFixCmdPost l*    lwindow
 augroup END
 
-" Gutentags
-let g:gutentags_add_default_project_roots = 0
-let g:gutentags_project_root = ['.git', 'setup.py', 'requirements.txt', 'Makefile']
-let g:gutentags_cache_dit = expand('~/.cache/vim/ctags/')
-let g:gutentags_generate_on_new = 1
-let g:gutentags_generate_on_missing = 1
-let g:gutentags_generate_on_write = 1
-let g:gutentags_generate_on_empty_buffer = 0
-let g:gutentags_ctags_extra_args = [
-            \ '--tag-relative=yes',
-            \ '--fields=+ailmnS',
-            \ ]
-" Pasted from reddit
-let g:gutentags_ctags_exclude = [
-      \ '*.git', '*.svg', '*.hg',
-      \ '*/tests/*',
-      \ 'build',
-      \ 'dist',
-      \ '*sites/*/files/*',
-      \ 'bin',
-      \ 'node_modules',
-      \ 'bower_components',
-      \ 'cache',
-      \ 'compiled',
-      \ 'docs',
-      \ 'example',
-      \ 'bundle',
-      \ 'vendor',
-      \ '*.md',
-      \ '*-lock.json',
-      \ '*.lock',
-      \ '*bundle*.js',
-      \ '*build*.js',
-      \ '.*rc*',
-      \ '*.json',
-      \ '*.min.*',
-      \ '*.map',
-      \ '*.bak',
-      \ '*.zip',
-      \ '*.pyc',
-      \ '*.class',
-      \ '*.sln',
-      \ '*.Master',
-      \ '*.csproj',
-      \ '*.tmp',
-      \ '*.csproj.user',
-      \ '*.cache',
-      \ '*.pdb',
-      \ 'tags*',
-      \ 'cscope.*',
-      \ '*.css',
-      \ '*.less',
-      \ '*.scss',
-      \ '*.exe', '*.dll',
-      \ '*.mp3', '*.ogg', '*.flac',
-      \ '*.swp', '*.swo',
-      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
-      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
-      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
-      \ ]
+" Colorscheme setup
+set background=light
+colorscheme snow
 
-" netrw config
+hi User1 ctermfg=green ctermbg=black
+hi User2 ctermfg=yellow ctermbg=black
+hi User3 ctermfg=red ctermbg=black
+hi User4 ctermfg=blue ctermbg=black
+hi User5 ctermfg=white ctermbg=black
+
+" Find out current buffer's size and output it.
+function! FileSize()
+  let bytes = getfsize(expand('%:p'))
+  if (bytes >= 1024)
+    let kbytes = bytes / 1024
+  endif
+  if (exists('kbytes') && kbytes >= 1000)
+    let mbytes = kbytes / 1000
+  endif
+
+  if bytes <= 0
+    return '0'
+  endif
+
+  if (exists('mbytes'))
+    return mbytes . 'MB '
+  elseif (exists('kbytes'))
+    return kbytes . 'KB '
+  else
+    return bytes . 'B '
+  endif
+endfunction
+
+let g:linefeed={'unix':'LF', 'dos':'CRLF', 'windows':'CRLF'}
+
+" Statusline settings
+set statusline=
+set statusline +=%1*\ %n\ %*            "buffer number
+set statusline +=%5*%{&ff}%*            "file format
+set statusline +=%3*%y%*                "file type
+set statusline +=%4*\ %<%F%*            "full path
+set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%=%5l%*             "current line
+set statusline +=%2*/%L%*               "total lines
+set statusline +=%1*%4v\ %*             "virtual column number
+set statusline +=%2*%3{g:linefeed[&ff]}%*     "line-feed type
+" set statusline +=%2*0x%04B\ %*          "character under cursor
+set statusline+=%8*\ %-3(%{FileSize()}%)                 " File size
+
+" Netrw config
 let g:netrw_winsize = 25
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 let g:netrw_browse_split = 4
 let g:netrw_altv = 1
-
-" vim-go
-let g:go_def_mapping_enabled = 0
-
-au Filetype rust set colorcolumn=100
