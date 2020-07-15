@@ -1,0 +1,69 @@
+#!/usr/bin/bash
+
+name=$(basename $(pwd))
+[[ -z "requirements.txt" ]] && touch requirements.txt
+[[ -z "setup.py" ]] && touch setup.py
+[[ -z "setup.cfg" ]] && touch setup.cfg
+
+cat <<EOF >setup.py
+import unittest
+try:
+    from pip._internal.req import parse_requirements
+except ImportError:
+    from pip.req import parse_requirements
+
+from setuptools import setup, find_packages
+
+
+install_reqs = parse_requirements('requirements.txt', session='hack')
+
+
+def get_test_suite():
+    test_loader = unittest.TestLoader()
+    tests = test_loader.discover("tests", pattern="test_*.py")
+    return tests
+
+setup(
+    name="$name",
+    version="0.0.1",
+    packages=find_packages(),
+    install_requires=[str(ir.req) for ir in install_reqs],
+    test_suite="setup.get_test_suite"
+)
+EOF
+
+cat <<EOF >setup.cfg
+[pylint]
+ignore=too-many-arguments
+[pycodestyle]
+ignore=E501
+[pydocstyle]
+ignore=D412,D101,D102,D103,D105,D107,D400,D209,D213,D212,D211,D205,D401,D413
+[flake8]
+max-line-length = 100
+ignore =
+    # F812: list comprehension redefines ...
+    F812,
+    # H101: Use TODO(NAME)
+    H101,
+    # H202: assertRaises Exception too broad
+    H202,
+    # H233: Python 3.x incompatible use of print operator
+    H233,
+    # H301: one import per line
+    H301,
+    # H306: imports not in alphabetical order (time, os)
+    H306,
+    # H401: docstring should not start with a space
+    H401,
+    # H403: multi line docstrings should end on a new line
+    H403,
+    # H404: multi line docstring should start without a leading new line
+    H404,
+    # H405: multi line docstring summary not separated with an empty line
+    H405,
+    # H501: Do not use self.__dict__ for string formatting
+    H501
+    # W503: Line break before binary operator
+    W503
+EOF
