@@ -55,5 +55,5 @@ alias v=vi
 alias dp="DUFFEL_LINK_ENABLE_PROXY=true DUFFEL_LINK_SKIP_SSL_VERIFY=true mix phx.server"
 alias dt="kubectl -n monitoring port-forward svc/squid 3128:3128"
 
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
