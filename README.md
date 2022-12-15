@@ -10,6 +10,14 @@ echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> 
 source .bashrc
 ```
 
+### Clone repository
+
+Assuming SSH, otherwise clone through token on `https://github.com/codepr/dotfiles.git`
+
+```sh
+git clone --bare git@github.com:codepr/dotfiles.git $HOME/.cfg
+```
+
 ### Checkout dotfiles
 
 ```sh

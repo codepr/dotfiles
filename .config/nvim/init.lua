@@ -443,8 +443,8 @@ vim.api.nvim_command("au BufRead,BufNewFile mix.lock set filetype=elixir")
 vim.api.nvim_command("au BufWinEnter *.<fileextension> set updatetime=300 | set ft=<filetype>| set autoread ")
 vim.api.nvim_command("au CursorHold *.<fileextension>  checktime")
 vim.api.nvim_command("au BufWritePost *.lua lua vim.lsp.buf.formatting()")
-vim.api.nvim_command("au BufWritePost *.ex lua vim.lsp.buf.formatting_seq_sync()")
-vim.api.nvim_command("au BufWritePost *.exs lua vim.lsp.buf.formatting_seq_sync()")
+vim.api.nvim_command("au BufWritePost *.ex lua vim.lsp.buf.format({ timeout_ms = 2000 })")
+vim.api.nvim_command("au BufWritePost *.exs lua vim.lsp.buf.format({ timeout_ms = 2000 })")
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   command = [[%s/\s\+$//e]],
