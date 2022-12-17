@@ -1,6 +1,7 @@
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "elixir", "eex", "erlang", "heex", "html", "surface" },
+  ensure_installed = { "help", "elixir", "eex", "erlang", "heex", "html", "lua", "surface" },
   sync_install = false,
+  auto_install = true,
   ignore_install = { },
   highlight = {
     enable = true,

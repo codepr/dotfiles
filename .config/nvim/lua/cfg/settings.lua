@@ -1,7 +1,7 @@
-vim.cmd [[
-    syntax enable
-    colorscheme tokyonight-storm
-]]
+-- vim.cmd [[
+--     syntax enable
+--     colorscheme tokyonight-storm
+-- ]]
 
 local settings = {
     timeoutlen = 300,
@@ -43,7 +43,7 @@ local settings = {
     ---------------------
     number = true,
     relativenumber = true,
-    scrolloff = 4,
+    scrolloff = 8,
     ruler = true,
     cursorline = true,
     listchars = "trail:·,tab:→ ,nbsp:·",
@@ -55,7 +55,7 @@ local settings = {
     visualbell = false,
     lazyredraw = true,
     synmaxcol = 240,
-    updatetime = 250,
+    updatetime = 50,
     history = 100,
     hidden = true,
     ttyfast = true,
@@ -70,6 +70,7 @@ local settings = {
     -- Commands
     -----------
     inccommand = "nosplit",
+    smartindent = true,
 
     incsearch = true,
     hlsearch = true,
