@@ -1,6 +1,5 @@
 require('cfg/functions')
 require('cfg/plugins')
-require('cfg/cmp')
 require('cfg/keymap')
 require('cfg/settings')
 require('cfg/vc')

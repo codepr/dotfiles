@@ -79,6 +79,7 @@ local settings = {
     smartcase = true,
     mouse = a,
     termguicolors = true,
+    completeopt = menu, menuone, noselect,
 }
 
 for k, v in pairs(settings) do

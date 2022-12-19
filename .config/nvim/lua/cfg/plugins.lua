@@ -8,7 +8,6 @@ require('packer').startup(function(use)
   use { 'wbthomason/packer.nvim' }
 
   -- lsp config for elixir-ls support
-  -- use {'neovim/nvim-lspconfig'}
   use {
     'VonHeikemen/lsp-zero.nvim',
     requires = {
@@ -117,7 +116,6 @@ require('packer').startup(function(use)
       }
     end
   }
-
-  -- use { 'jose-elias-alvarez/null-ls.nvim' }
+  use { 'nvim-tree/nvim-web-devicons' }
 
 end)
