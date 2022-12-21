@@ -7,6 +7,8 @@ require('packer').startup(function(use)
   -- the plugin manager can manage itself
   use { 'wbthomason/packer.nvim' }
 
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
   -- lsp config for elixir-ls support
   use {
     'VonHeikemen/lsp-zero.nvim',
@@ -29,17 +31,8 @@ require('packer').startup(function(use)
       { 'rafamadriz/friendly-snippets' },
     }
   }
-  -- cmp framework for auto-completion support
-  use { 'hrsh7th/nvim-cmp' }
-
   -- cursor jump
   use { 'DanilaMihailov/beacon.nvim' }
-
-  -- install different completion source
-  use { 'hrsh7th/cmp-nvim-lsp' }
-  use { 'hrsh7th/cmp-buffer' }
-  use { 'hrsh7th/cmp-path' }
-  use { 'hrsh7th/cmp-cmdline' }
 
   -- you need a snippet engine for snippet support
   -- here I'm using vsnip which can load snippets in vscode format

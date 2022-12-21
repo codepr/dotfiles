@@ -15,6 +15,8 @@ lsp.preset('recommended')
 lsp.setup_nvim_cmp({
     mapping = {
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<Esc>'] = cmp.mapping.close(),
         -- other mappings ...
         ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -34,6 +36,18 @@ lsp.setup_nvim_cmp({
                 feedkey("<Plug>(vsnip-jump-prev)", "")
             end
         end, { "i", "s" })
-    }
+    },
+    sources = {
+        { name = 'nvim_lsp' }, -- For nvim-lsp
+        { name = 'ultisnips' }, -- For ultisnips user.
+        { name = 'nvim_lua' }, -- for nvim lua function
+        { name = 'path' }, -- for path completion
+        { name = 'buffer', keyword_length = 4 }, -- for buffer word completion
+        { name = 'omni' },
+    },
+    completion = {
+        keyword_length = 1,
+        completeopt = "menu,noselect"
+    },
 })
 lsp.setup()
