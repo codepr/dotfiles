@@ -65,7 +65,7 @@ local settings = {
     --------
     -- For fish users out there, its quite slow compared to stock bash, as such
     -- tell Neovim to use bash to execute commands
-    shell = "/bin/zsh",
+    shell = "/bin/sh",
     -----------
     -- Commands
     -----------
