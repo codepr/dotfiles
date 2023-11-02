@@ -1,6 +1,28 @@
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
-require('telescope').setup({})
+require('telescope').setup({
+  defaults = {
+    selection_caret = "󰜋 ",
+    prompt_prefix = "❱ ",
+    multi_icon = "󰒆 ",
+    file_ignore_patterns = {
+        "%.git/",
+        "%.git$", -- git dir in submodules
+        "node_modules/", -- node
+        "venv/", -- python
+        "%.app/", -- internals of mac apps
+        "%.pxd", -- Pixelmator
+        "%.plist$", -- Alfred
+        "%.project-root$", -- harpoon/projects
+        "%.png$",
+        "%.gif$",
+        "%.icns",
+        "%.zip$",
+        ".DS_Store", -- needs to be explicitly added, since unignored in some repos
+        "%-bkp$", -- backup files
+    },
+  }
+})
 
 local remap = vim.keymap.set
 

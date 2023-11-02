@@ -29,6 +29,7 @@ remap("n", "<leader>e", ":e %:p:h/", { silent = true, noremap = true })
 remap("n", "<esc>", ":noh<return><esc>", { silent = true, noremap = true })
 remap("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", { desc = 'Rename the word across the buffer' })
 remap("n", "<leader>t", ":NvimTreeFindFileToggle<CR>", { desc = 'Toggle Tree find file' })
+remap("n", "<leader>a", ":AerialToggle<CR>", { desc = 'Toggle Aerial' })
 -- Diagnostic keymaps
 remap('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 remap('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })

@@ -53,14 +53,37 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
   -- gopls = {},
   -- pyright = {},
-  -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
-  elixirls = {},
+  zig = {},
+  clangd = {},
+  gopls = {
+    gopls = {
+      completeUnimported = true,
+      usePlaceholders = true,
+      analyses = {
+        unusuedparams = true
+      }
+    }
+  },
+
+  rust_analyzer = {
+    ['rust-analyzer'] = {
+      cargo = {
+        allFeatures = true,
+      },
+    }
+  },
+
+  elixirls = {
+    elixirLS = {
+      mixEnv = 'dev'
+    }
+  },
+
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -93,35 +116,3 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
-
--- Function to check if a floating dialog exists and if not
--- then check for diagnostics under the cursor
-function OpenDiagnosticIfNoFloat()
-  for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if vim.api.nvim_win_get_config(winid).zindex then
-      return
-    end
-  end
-
-  -- THIS IS FOR BUILTIN LSP
-  vim.diagnostic.open_float(0, {
-    scope = "cursor",
-    focusable = false,
-    close_events = {
-      "CursorMoved",
-      "CursorMovedI",
-      "BufHidden",
-      "InsertCharPre",
-      "WinLeave",
-    },
-  })
-end
-
--- Show diagnostics under the cursor when holding position
-vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true })
-vim.api.nvim_create_autocmd({ "CursorHold" }, {
-  pattern = "*",
-  command = "lua OpenDiagnosticIfNoFloat()",
-  group = "lsp_diagnostics_hold",
-})
-

@@ -58,12 +58,13 @@ local settings = {
     hidden = true,
     ttyfast = true,
     splitright = true,
+    guicursor = "",
     --------
     -- Shell
     --------
     -- For fish users out there, its quite slow compared to stock bash, as such
     -- tell Neovim to use bash to execute commands
-    shell = "/bin/sh",
+    shell = "/bin/zsh",
     -----------
     -- Commands
     -----------
@@ -77,7 +78,11 @@ local settings = {
     smartcase = true,
     mouse = 'a',
     completeopt = 'menu,menuone,noselect',
-    fillchars = { eob = " " },
+    fillchars = { eob = " ", fold = " " },
+
+    foldmethod = "indent",
+    foldenable = false,
+    foldlevel = 99,
 }
 
 for k, v in pairs(settings) do
@@ -144,10 +149,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- autoformat on save
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = { '*.ex,*.exs,*.heex' },
+vim.api.nvim_create_augroup('AutoFormatting', { clear = true })
+vim.api.nvim_create_autocmd('BufWritePre', {
+  group = 'AutoFormatting',
+  pattern = { '*.ex,*.exs,*.heex,*.go,*.rs' },
   callback = function()
-    vim.lsp.buf.format { async = true }
+    vim.lsp.buf.format { async = false }
   end
 })
 
@@ -167,6 +174,7 @@ local config = {
   signs = {
     active = signs, -- show signs
   },
+  virtual_text = true,
   update_in_insert = false,
   underline = true,
   severity_sort = true,

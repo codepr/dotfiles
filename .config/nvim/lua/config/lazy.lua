@@ -57,9 +57,61 @@ require('lazy').setup({
     },
   },
 
+  { "preservim/vim-markdown" },
+
+  { -- signature hints
+      "ray-x/lsp_signature.nvim",
+      -- loading on `require` or InsertEnter ignores the config, so loading on LspAttach
+      event = "LspAttach",
+      opts = {
+          floating_window = false,
+          hint_prefix = "󰘎 ",
+          hint_scheme = "NonText", -- = highlight group
+      },
+      config = function(_, opts) require'lsp_signature'.setup(opts) end
+  },
+
+  { -- display inlay hints from LSP
+      "lvimuser/lsp-inlayhints.nvim", -- INFO only temporarily needed, until https://github.com/neovim/neovim/issues/18086
+      init = function()
+          if vim.version().major == 0 and vim.version().minor >= 10 then
+              vim.notify("lsp-inlayhints.nvim is now obsolete.")
+          end
+
+          vim.api.nvim_create_autocmd("LspAttach", {
+              callback = function(args)
+                  local bufnr = args.buf
+                  local client = vim.lsp.get_client_by_id(args.data.client_id)
+                  local capabilities = client.server_capabilities
+                  if capabilities.inlayHintProvider then
+                      require("lsp-inlayhints").on_attach(client, bufnr, false)
+                  end
+              end,
+          })
+      end,
+      opts = {
+          inlay_hints = {
+              parameter_hints = {
+                  prefix = " ",
+                  remove_colon_start = true,
+                  remove_colon_end = true,
+              },
+              type_hints = {
+                  prefix = " ",
+                  remove_colon_start = true,
+                  remove_colon_end = true,
+              },
+              labels_separator = ":",
+              only_current_line = true,
+              highlight = "NonText",
+          },
+      },
+  },
+
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
+	event = { "InsertEnter", "CmdlineEnter" }, -- CmdlineEnter for completions there
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       'L3MON4D3/LuaSnip',
@@ -70,22 +122,33 @@ require('lazy').setup({
 
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
+
+      -- Buffer completion
+      'hrsh7th/cmp-buffer',
+
+      -- FS path completion
+      'hrsh7th/cmp-path',
+
+      -- Command line completion
+      'hrsh7th/cmp-cmdline',
     },
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim', event = "VeryLazy", opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    event = "VeryLazy",
     opts = {
       -- See `:help gitsigns.txt`
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
+        add          = { text = '│' },
+        change       = { text = '│' },
+        delete       = { text = '_' },
+        topdelete    = { text = '‾' },
         changedelete = { text = '~' },
+        untracked    = { text = '┆' },
       },
       on_attach = function(bufnr)
         vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
@@ -115,25 +178,13 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-     --  vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	    -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-	    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#e86671", bg = "none" })
-    end,
-  },
-
-  {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
-        theme = 'onedark',
+        icons_enabled = true,
+        theme = 'catpuccin',
         component_separators = '|',
         section_separators = '',
       },
@@ -181,6 +232,109 @@ require('lazy').setup({
     config = function()
       require("nvim-tree").setup()
     end
+  },
+
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = {
+       "nvim-treesitter/nvim-treesitter",
+       "nvim-tree/nvim-web-devicons"
+    },
+    config = function()
+        require('aerial').setup({
+        -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+        on_attach = function(bufnr)
+          -- Jump forwards/backwards with '{' and '}'
+          vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
+          vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
+        end
+      })
+      -- You probably also want to set a keymap to toggle aerial
+      vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
+    end
+  },
+
+  {
+    "simrat39/rust-tools.nvim",
+    ft = "rust",
+    dependencies = "neovim/nvim-lspconfig",
+    config = function(_, opts)
+      require('rust-tools').setup(opts)
+    end
+  },
+
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    config = function()
+      function ColorMe(color, transparency)
+          color = color or "catppuccin"
+          require("catppuccin").setup({
+              flavour = "mocha", -- latte, frappe, macchiato, mocha
+              background = { -- :h background
+                  light = "latte",
+                  dark = "mocha",
+              },
+              transparent_background = false, -- disables setting the background color.
+              show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+              term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+              dim_inactive = {
+                  enabled = false, -- dims the background color of inactive window
+                  shade = "dark",
+                  percentage = 0.15, -- percentage of the shade to apply to the inactive window
+              },
+              no_italic = false, -- Force no italic
+              no_bold = false, -- Force no bold
+              no_underline = false, -- Force no underline
+              styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+                  comments = { "italic" }, -- Change the style of comments
+                  conditionals = { "italic" },
+                  loops = {},
+                  functions = {},
+                  keywords = {},
+                  strings = {},
+                  variables = {},
+                  numbers = {},
+                  booleans = {},
+                  properties = {},
+                  types = {},
+                  operators = {},
+              },
+              color_overrides = {},
+              custom_highlights = {},
+              integrations = {
+                  cmp = true,
+                  gitsigns = true,
+                  nvimtree = true,
+                  treesitter = true,
+                  notify = false,
+                  mini = {
+                      enabled = true,
+                      indentscope_color = "",
+                  },
+              },
+          })
+          vim.cmd.colorscheme(color)
+          if transparency then
+            vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
+            vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#202020" })
+            vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#e86671", bg = "none" })
+            vim.cmd 'highlight TelescopeBorder guibg=none'
+            vim.cmd 'highlight TelescopeTitle guibg=none'
+            vim.cmd 'highlight TelescopePromptNormal guibg=none'
+            vim.cmd 'highlight TelescopeResultsNormal guibg=none'
+            vim.cmd 'highlight TelescopePreviewNormal guibg=none'
+            vim.cmd 'highlight NvimTreeNormal guibg=none'
+            vim.cmd 'highlight NvimTreeNormalNC guibg=none'
+          end
+      end
+
+      ColorMe('catppuccin', false)
+    end,
+
   },
 
   {'akinsho/toggleterm.nvim', version = "*", config = true}
