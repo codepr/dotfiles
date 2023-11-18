@@ -82,9 +82,8 @@ local settings = {
 
     foldmethod = "indent",
     foldenable = false,
-    foldlevel = 99,
+    foldlevel = 99
 }
-
 for k, v in pairs(settings) do
     vim.opt[k] = v
 end
@@ -152,7 +151,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_augroup('AutoFormatting', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePre', {
   group = 'AutoFormatting',
-  pattern = { '*.ex,*.exs,*.heex,*.go,*.rs' },
+  pattern = { '*.ex,*.exs,*.heex,*.go,*.rs,*.c,*.h' },
   callback = function()
     vim.lsp.buf.format { async = false }
   end
@@ -220,4 +219,4 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
   group = "lsp_diagnostics_hold",
 })
 
-
+vim.api.nvim_create_user_command("RestNvim", require("rest-nvim").run, {})

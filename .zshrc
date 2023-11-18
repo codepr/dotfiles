@@ -3,12 +3,13 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export TERM=screen-256color
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="minimal"
+ZSH_THEME="arrow"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -73,7 +74,7 @@ ZSH_THEME="minimal"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
-
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -123,3 +124,5 @@ alias dp="DUFFEL_LINK_ENABLE_PROXY=true DUFFEL_LINK_SKIP_SSL_VERIFY=true mix phx
 alias dt="kubectl -n monitoring port-forward svc/squid 3128:3128"
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh

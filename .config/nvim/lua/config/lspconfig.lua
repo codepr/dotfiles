@@ -58,7 +58,7 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
-  zig = {},
+  -- zig = {},
   clangd = {},
   gopls = {
     gopls = {
