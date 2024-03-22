@@ -1,7 +1,7 @@
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
-  -- A function that lets us more easily define mappings specific for LSP related items. 
+  -- A function that lets us more easily define mappings specific for LSP related items.
   -- It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
     if desc then
@@ -32,6 +32,14 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
+
+
+  require "lsp_signature".on_attach({
+      bind = true, -- This is mandatory, otherwise border config won't get registered.
+      handler_opts = {
+        border = "rounded"
+      }
+    }, bufnr)  -- Note: add in lsp client on-attach
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -78,11 +86,11 @@ local servers = {
     }
   },
 
-  elixirls = {
-    elixirLS = {
-      mixEnv = 'dev'
-    }
-  },
+  -- elixirls = {
+  --   elixirLS = {
+  --     mixEnv = 'dev'
+  --   }
+  -- },
 
   lua_ls = {
     Lua = {
@@ -116,3 +124,30 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+local lspconfig = require("lspconfig")
+local configs = require("lspconfig.configs")
+
+local lexical_config = {
+  filetypes = { "elixir", "eelixir", "heex" },
+  cmd = { "/Users/andrea/Code/lexical/_build/dev/package/lexical/bin/start_lexical.sh" },
+  -- settings = {},
+}
+
+if not configs.lexical then
+  configs.lexical = {
+    default_config = {
+      filetypes = lexical_config.filetypes,
+      cmd = lexical_config.cmd,
+      root_dir = function(fname)
+        return lspconfig.util.root_pattern("mix.exs", ".git")(fname) or vim.loop.os_homedir()
+      end,
+      -- optional settings
+      settings = lexical_config.settings,
+    },
+  }
+end
+
+lspconfig.lexical.setup({
+  on_attach = on_attach,
+})

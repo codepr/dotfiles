@@ -12,4 +12,5 @@ require('config/treesitter')
 require('config/settings')
 -- [[ Configure editor keyset ]]
 require('config/mappings')
-
+-- [[ Configure status line ]]
+require('config/statusline')

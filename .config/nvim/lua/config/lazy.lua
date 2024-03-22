@@ -28,15 +28,35 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
-  -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  { 'mhinz/vim-grepper' },
+
+  {
+    'rmagatti/goto-preview',
+    config = function()
+      require('goto-preview').setup {}
+    end
+  },
+
+  { 'tpope/vim-fugitive' },
+
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",         -- required
+      "sindrets/diffview.nvim",        -- optional - Diff integration
+
+      -- Only one of these is needed, not both.
+      "nvim-telescope/telescope.nvim", -- optional
+      "ibhagwan/fzf-lua",              -- optional
+    },
+    config = true
+ },
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  { 'tpope/vim-sleuth' },
 
   -- Match parens effectively
-  'andymass/vim-matchup',
+  { 'andymass/vim-matchup' },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -71,43 +91,6 @@ require('lazy').setup({
     config = function(_, opts) require'lsp_signature'.setup(opts) end
   },
 
-  { -- display inlay hints from LSP
-    "lvimuser/lsp-inlayhints.nvim", -- INFO only temporarily needed, until https://github.com/neovim/neovim/issues/18086
-    init = function()
-      if vim.version().major == 0 and vim.version().minor >= 10 then
-        vim.notify("lsp-inlayhints.nvim is now obsolete.")
-      end
-
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(args)
-          local bufnr = args.buf
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          local capabilities = client.server_capabilities
-          if capabilities.inlayHintProvider then
-            require("lsp-inlayhints").on_attach(client, bufnr, false)
-          end
-        end,
-      })
-    end,
-    opts = {
-      inlay_hints = {
-        parameter_hints = {
-          prefix = " ",
-          remove_colon_start = true,
-          remove_colon_end = true,
-        },
-        type_hints = {
-          prefix = " ",
-          remove_colon_start = true,
-          remove_colon_end = true,
-        },
-        labels_separator = ":",
-        only_current_line = true,
-        highlight = "NonText",
-      },
-    },
-  },
-
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -136,6 +119,7 @@ require('lazy').setup({
 
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', event = "VeryLazy", opts = {} },
+
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -174,20 +158,6 @@ require('lazy').setup({
           return '<Ignore>'
         end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
       end,
-    },
-  },
-
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = true,
-        theme = 'catppuccin',
-        component_separators = '|',
-        section_separators = '',
-      },
     },
   },
 
@@ -235,28 +205,6 @@ require('lazy').setup({
   },
 
   {
-    'stevearc/aerial.nvim',
-    opts = {},
-    -- Optional dependencies
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons"
-    },
-    config = function()
-      require('aerial').setup({
-        -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-        on_attach = function(bufnr)
-          -- Jump forwards/backwards with '{' and '}'
-          vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
-          vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
-        end
-      })
-      -- You probably also want to set a keymap to toggle aerial
-      vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
-    end
-  },
-
-  {
     "simrat39/rust-tools.nvim",
     ft = "rust",
     dependencies = "neovim/nvim-lspconfig",
@@ -264,6 +212,10 @@ require('lazy').setup({
       require('rust-tools').setup(opts)
     end
   },
+
+  { 'rktjmp/lush.nvim' },
+
+  { "mcchrish/zenbones.nvim" },
 
   {
     "catppuccin/nvim",
@@ -332,12 +284,14 @@ require('lazy').setup({
         end
       end
 
-      ColorMe('catppuccin', false)
+      -- ColorMe('catppuccin', false)
+      ColorMe("zenbones", false)
     end,
 
   },
 
-  { 'rest-nvim/rest.nvim',
+  {
+    'rest-nvim/rest.nvim',
     dependencies = { { "nvim-lua/plenary.nvim" } },
     commit = "8b62563",
     config = function()

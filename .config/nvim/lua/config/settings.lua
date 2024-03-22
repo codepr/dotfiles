@@ -29,21 +29,23 @@ local settings = {
     -----------------------
     -- Format
     -----------------------
-    formatoptions = "qj",
+    formatoptions = "jcroqlnt",
     ------------------------------
     -- Spellchecking
     ------------------------------
-    spelllang = "en",
+    spelllang = { "en" },
     -- Save undo history
     undofile = true,
+    showmode = false,
     ---------------------
     -- UI
     ---------------------
     number = true,
-    relativenumber = true,
+    relativenumber = false,
     scrolloff = 8,
     ruler = true,
-    cursorline = false,
+    cursorline = true,
+    list = true,
     listchars = "trail:·,tab:→ ,nbsp:·",
     tabstop = 4,
     shiftwidth = 4,
@@ -58,6 +60,7 @@ local settings = {
     hidden = true,
     ttyfast = true,
     splitright = true,
+    splitbelow = true,
     guicursor = "",
     --------
     -- Shell
@@ -155,6 +158,11 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   callback = function()
     vim.lsp.buf.format { async = false }
   end
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  pattern = { "*" },
+  command = [[%s/\s\+$//e]],
 })
 
 -- Configuration for diagnostics

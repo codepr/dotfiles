@@ -1,4 +1,5 @@
 local remap = vim.keymap.set
+require('config.autotest')
 
 -- Remap for dealing with word wrap
 remap('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -34,17 +35,27 @@ remap("n", "<leader>a", ":AerialToggle<CR>", { desc = 'Toggle Aerial' })
 remap('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 remap('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 remap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+-- Custom
+remap('n', "<leader>.", ":lua run_test_at_cursor()<cr><cr>", { silent = true, noremap = true })
 
+local goto = require("goto-preview")
+
+remap('n', 'gpd', goto.goto_preview_definition, { desc = 'Go to definition with preview' })
+remap('n', 'gpt', goto.goto_preview_type_definition)
+remap('n', 'gpi', goto.goto_preview_implementation)
+remap('n', 'gpD', goto.goto_preview_declaration)
+remap('n', 'gP', goto.close_all_win)
+remap('n', 'gpr', goto.goto_preview_references)
 
 function _G.set_terminal_keymaps()
-    local opts = { noremap = true }
-    vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', 'jk', [[<C-\><C-n>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', 'kj', [[<C-\><C-n>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-h>', [[<C-\><C-n><C-W>h]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-k>', [[<C-\><C-n><C-W>k]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-l>', [[<C-\><C-n><C-W>l]], opts)
+  local opts = { noremap = true }
+  vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', 'jk', [[<C-\><C-n>]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', 'kj', [[<C-\><C-n>]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', '<C-h>', [[<C-\><C-n><C-W>h]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', '<C-k>', [[<C-\><C-n><C-W>k]], opts)
+  vim.api.nvim_buf_set_keymap(0, 't', '<C-l>', [[<C-\><C-n><C-W>l]], opts)
 end
 
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
@@ -53,3 +64,7 @@ vim.api.nvim_create_autocmd({ "TermOpen" }, {
   command = "lua set_terminal_keymaps()",
 })
 
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "*",
+  command = "set noro",
+})
