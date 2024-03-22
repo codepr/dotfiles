@@ -61,7 +61,7 @@ local settings = {
     ttyfast = true,
     splitright = true,
     splitbelow = true,
-    guicursor = "",
+    -- guicursor = "",
     --------
     -- Shell
     --------
