@@ -1,6 +1,15 @@
+local hiragana = {
+  "あいうえお",
+  "かきくけこ",
+  "さしすせそ",
+  "たちツテと",
+  "なにぬねの",
+  "はひふへほ",
+  "まみむめも",
+}
 
 local modes = {
-  ["n"] = "NORMAL あ",
+  ["n"] = "NORMAL",
   ["no"] = "NORMAL",
   ["v"] = "VISUAL",
   ["V"] = "VISUAL LINE",
@@ -24,7 +33,8 @@ local modes = {
 
 local function mode()
   local current_mode = vim.api.nvim_get_mode().mode
-  return string.format(" %s ", modes[current_mode]):upper()
+  -- return string.format(" %s  くま", modes[current_mode]):upper()
+  return string.format(" %s  %s", modes[current_mode], hiragana[math.random(#hiragana)]):upper()
 end
 
 
