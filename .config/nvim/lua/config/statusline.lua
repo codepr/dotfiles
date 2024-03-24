@@ -34,7 +34,7 @@ local modes = {
 local function mode()
   local current_mode = vim.api.nvim_get_mode().mode
   -- return string.format(" %s  くま", modes[current_mode]):upper()
-  return string.format(" %s  %s", modes[current_mode], hiragana[math.random(#hiragana)]):upper()
+  return string.format(" %s  %s", modes[current_mode], hiragana[5]):upper()
 end
 
 
@@ -142,7 +142,7 @@ local vcs = function()
      changed,
      removed,
      " ",
-     "%#GitSignsAdd# ",
+     " %#GitSignsAdd# ",
      git_info.head,
      " %#Normal#",
   }
