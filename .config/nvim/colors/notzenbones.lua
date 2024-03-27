@@ -25,13 +25,13 @@ else
 	palette = util.palette_extend({
 		-- bg = hsluv "#1C1917",
 		bg = hsluv "#1b1b1b",
-		fg = hsluv "#cfcfcf",
+		fg = hsluv "#bebebe",
 		sand = hsluv "#cfcfcf",
 		rose = hsluv "#fb4934",
 		leaf = hsluv "#b8bb26",
 		wood = hsluv "#fabd2f",
 		-- water = hsluv "#83a598",
-		water = hsluv "#c9e4fd",
+		water = hsluv "#b8dcfc",
 		blossom = hsluv "#d3869b",
 		sky = hsluv "#add5a8",
 	}, bg)
@@ -44,15 +44,16 @@ local base_specs = generator.generate(palette, bg, generator.get_global_config(c
 -- Optionally extend specs using Lush
 local specs = lush.extends({ base_specs }).with(function()
 	return {
-		Statement { fg = palette.fg },
+		Statement { fg = palette.water },
+		PreProc { gui = "NONE" },
 		-- Repeat { fg = palette.fg, gui = "bold" },
 		Special { fg = palette.fg },
 		Type { fg = palette.water },
 		Constant { fg = palette.sky, gui = "NONE" },
 		Number { gui = "NONE" },
-		Function { fg = palette.fg },
-		Identifier { fg = palette.fg },
-		Keyword { fg = palette.water , gui = "NONE" },
+		Function { fg = palette.fg , gui = "bold" },
+		Identifier { fg = palette.fg , gui = "NONE"},
+		Keyword { fg = palette.water , gui = "bold" },
 		Operator { fg = palette.fg, gui = "NONE" },
 		GitSignsAdd { fg = palette.sky },
 		Typedef { fg = palette.water },
