@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (setq user-full-name "Andrea Baldan"
       user-mail-address "a.g.baldan@gmail.com")
 
@@ -6,7 +7,7 @@
 
 (toggle-frame-maximized)
 
-(set-frame-font "Liga SFMono Nerd Font 13")
+(set-frame-font "Iosevka Nerd Font Mono Light 16")
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -17,13 +18,6 @@
 
 (setq-default indent-tabs-mode nil)
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
-
-;; (ido-mode t)
-;; (ido-everywhere t)
-;; (setq ido-enabled-flex-matching t)
-;; (setq ido-use-filename-at-point t)
-;; (setq ido-use-virtual-buffers t)
-;; (setq ido-auto-merge-work-directories-length 0)
 
 (global-set-key "\C-x\C-x" 'execute-extended-command)
 
@@ -89,21 +83,15 @@
 (setq-default tab-width 4
               indent-tabs-mode nil)
 
-                                        ; Erase whitespaces
+;; Erase whitespaces
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
-                                        ; Packages
+;; Packages
 (use-package which-key
   :ensure t
   :diminish which-key-mode
   :config
   (which-key-mode +1))
-
-;; (use-package ido-vertical-mode
-;;   :ensure t)
-
-;; (require 'ido-vertical-mode)
-;; (ido-vertical-mode t)
 
 (use-package flycheck
   :ensure t
@@ -112,19 +100,18 @@
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(save mode-enable)))
 
-(use-package company
- :ensure t
- :diminish company-mode
- :config
- (add-hook 'after-init-hook #'global-company-mode)
- ;; ac behaviour
- (eval-after-load 'company
-   '(progn
-      (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-      (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-      (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-      (define-key company-active-map (kbd "<backtab>") 'company-select-previous))))
-
+;; (use-package company
+;;  :ensure t
+;;  :diminish company-mode
+;;  :config
+;;  (add-hook 'after-init-hook #'global-company-mode)
+;;  ;; ac behaviour
+;;  (eval-after-load 'company
+;;    '(progn
+;;       (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+;;       (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+;;       (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
+;;       (define-key company-active-map (kbd "<backtab>") 'company-select-previous))))
 
 (use-package elixir-mode
   :ensure t)
@@ -150,35 +137,94 @@
   ;; (setq vertico-cycle t)
   )
 
+(use-package corfu
+  ;; Optional customizations
+  ;; (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-;; (use-package corfu
-;;   ;; Optional customizations
-;;   ;; :custom
-;;   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-;;   ;; (corfu-auto t)                 ;; Enable auto completion
-;;   ;; (corfu-separator ?\s)          ;; Orderless field separator
-;;   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-;;   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-;;   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-;;   ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-;;   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-;;   ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
 
-;;   ;; Enable Corfu only for certain modes.
-;;   ;; :hook ((prog-mode . corfu-mode)
-;;   ;;        (shell-mode . corfu-mode)
-;;   ;;        (eshell-mode . corfu-mode))
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
+  :init
+  (global-corfu-mode)
 
-;;   ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-;;   ;; be used globally (M-/).  See also the customization variable
-;;   ;; `global-corfu-modes' to exclude certain modes.
-;;   :init
-;;   (global-corfu-mode))
+  :custom
+  (corfu-auto t)  ;; disables auto-completion
+  (corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
+  (corfu-preselect 'prompt)
+  (completion-styles '(basic))
 
-;; (setq-local corfu-auto        t
-;;             corfu-auto-delay  0 ;; TOO SMALL - NOT RECOMMENDED
-;;             corfu-auto-prefix 1 ;; TOO SMALL - NOT RECOMMENDED
-;;             completion-styles '(basic))
+  ;; Use TAB for cycling, default is `corfu-complete'.
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
+  )
+
+(use-package all-the-icons)
+
+;; prettify dired with icons
+(use-package all-the-icons-dired
+  :hook
+  (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-completion
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
+
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-elisp-symbol)
+         ("C-c p e" . cape-elisp-block)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p :" . cape-emoji)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -377,23 +423,42 @@
   ;; load default config
   (require 'smartparens-config))
 
+;; Eglot
+(use-package eglot
+  :custom
+  (fset #'jsonrpc--log-event #'ignore)
+  ;; (eglot-events-buffer-size 0)
+  (eglot-sync-connect nil)
+  (eglot-connect-timeout nil)
+  (eglot-autoshutdown t)
+  (eglot-send-changes-idle-time 3)
+  (flymake-no-changes-timeout 5)
+  (eldoc-echo-area-use-multiline-p nil)
+  (setq eglot-ignored-server-capabilities '( :documentHighlightProvider))
+
+  :hook
+  ((c-mode cc-mode cc-ts-mode) . eglot-ensure)
+  ((elixir-mode elixir-ts-mode) . eglot-ensure)
+  )
+
 (with-eval-after-load 'eglot
-  (setf (alist-get '(elixir-mode elixir-ts-mode heex-ts-mode)
-                   eglot-server-programs
-                   nil nil #'equal)
-        (if (and (fboundp 'w32-shell-dos-semantics)
-                 (w32-shell-dos-semantics))
-            '("language_server.bat")
-          (eglot-alternatives
-           '("language_server.sh" "/Users/andrea/Code/lexical/_build/dev/package/lexical/bin/start_lexical.sh")))))
+  (add-to-list 'eglot-server-programs
+               '((c-mode cc-mode cc-ts-mode) .
+                        ("clangd"
+                         "-j=4"
+                         "--log=error"
+                         "--background-index"
+                         "--clang-tidy"
+                         "--cross-file-rename"
+                         "--completion-style=detailed"
+                         "--pch-storage=memory"
+                         "--header-insertion=never"
+                         "--header-insertion-decorators=0"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '((elixir-mode elixir-ts-mode) . ("elixir-ls"))))
 
-;; (with-eval-after-load 'eglot
-  ;; (add-to-list 'eglot-server-programs
-               ;; '(cc-mode . ("clangd"))
-               ;; '(elixir-mode . ("elixir-ls"))))
-
-(add-hook 'cc-mode-hook 'eglot-ensure)
-(add-hook 'elixir-mode-hook 'eglot-ensure)
+;; (add-hook 'cc-mode-hook 'eglot-ensure)
+;; (add-hook 'elixir-mode-hook 'eglot-ensure)
 
 ;; Customization
 (defun my/move-beginning-of-line (arg)
@@ -511,13 +576,33 @@ Comment the current line if there's no active region."
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
-   '("30df7ea949ac3764ad6c885f1dc1a32209987598b6e42bfc5f443e45f5d87f84" default))
+   '("dbf0cd368e568e6139bb862c574c4ad4eec1859ce62bc755d2ef98f941062441"
+     "9b2bda47b3ba956911a51ec15cf8b10e5b3581b1c07dec0c0ceae4356226f085"
+     "0644e37fab4ce9b1cf3c2227dd87bdaa2b7dc0a2e1ec065b200b21c66826cfdc"
+     "d138a17991878a8f4eff85bf863e40a62747fc93a53808fbadde888fac9b5b94"
+     "0f7ccf0f4373629cb8b9f244f12664c7eba8bfd18bcfcaa7024bf320ea7140b4"
+     "287cda949ec9e31a5043fb0d9bc9fac59a292fad2a5e068771d19c8530738b92"
+     "e8330d72983083a7b0bfcecfc5ddc2b60cb49f8520ad96ca091d7c7154e11b1f"
+     "349692b619689937e225f4f383feff928af7895c76521d0a9e00c7a721988d9d"
+     "31e3f658f501ca7e6a2bc4437d0ea2d1337f3251f876f792b667bbde22adf510"
+     "a809c052f9caa02e4a0e5ad00875d38557f790160d312800a2d7bcd129ac7f34"
+     "c02fb287d23fd9e4912178e6e4ee53eb04fc10321a04a455a324a01418c231d1"
+     "d1e7375e0e34bab00a0831f590c1e003d91fab6214d9ec0b88362b35f847b059"
+     "65440ff0db23224c5efa2a32a83de8ac32ad763d6f1b79f67ba8745d668cbf55"
+     "f7981c953b1319b7c11bf0df3586bbeb4138754a2a5a51cd9369277cfbdb8be8"
+     "2c0c1fba6b519a76f99bc7f13603a4e91e9b8245674e0e292bc22f03d7472d98"
+     "bccd912cc4f2f5fc0b71c9fe9804a9b88cde869fdca170d0c5bbda7ad25103be"
+     "30df7ea949ac3764ad6c885f1dc1a32209987598b6e42bfc5f443e45f5d87f84" default))
  '(package-selected-packages
-   '(company consult corfu elixir-mode flycheck ido-vertical-mode magit marginalia
-             move-text orderless smartparens timu-macos-theme vertico which-key)))
+   '(all-the-icons all-the-icons-completion all-the-icons-dired company consult
+                   corfu elixir-mode elixir-ts-mode flycheck ido-vertical-mode
+                   magit marginalia move-text orderless smartparens
+                   timu-macos-theme vertico which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; (add-to-list 'custom-theme-load-path "/Users/andrea/Code/playground/notzenbones/")
