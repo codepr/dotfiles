@@ -37,15 +37,17 @@ remap('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic messa
 remap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 -- Custom
 remap('n', "<leader>.", ":lua run_test_at_cursor()<cr><cr>", { silent = true, noremap = true })
+-- Quickfix list
+remap('n', '[q', ':cprev<CR>', { desc = 'Go to prev quickfix item' })
+remap('n', ']q', ':cnext<CR>', { desc = 'Go to next quickfix item' })
 
-local goto = require("goto-preview")
+remap('n', '<leader>cn', ':cnext<CR>', { noremap = true, silent = true })
+remap('n', '<leader>cp', ':cprev<CR>', { noremap = true, silent = true })
 
-remap('n', 'gpd', goto.goto_preview_definition, { desc = 'Go to definition with preview' })
-remap('n', 'gpt', goto.goto_preview_type_definition)
-remap('n', 'gpi', goto.goto_preview_implementation)
-remap('n', 'gpD', goto.goto_preview_declaration)
-remap('n', 'gP', goto.close_all_win)
-remap('n', 'gpr', goto.goto_preview_references)
+remap('n', '<leader>dq', function()
+  vim.diagnostic.setqflist()
+end, { desc = 'Show diagnostics in quickfix list' })
+
 
 function _G.set_terminal_keymaps()
   local opts = { noremap = true }

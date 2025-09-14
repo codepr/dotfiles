@@ -66,7 +66,9 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
-  -- zig = {},
+  zls = {
+    max_line_length = 100,
+  },
   clangd = {},
   gopls = {
     gopls = {
@@ -92,6 +94,8 @@ local servers = {
   --   }
   -- },
 
+  -- erlangls = {},
+
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -114,16 +118,16 @@ mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-}
+-- mason_lspconfig.setup_handlers {
+--   function(server_name)
+--     require('lspconfig')[server_name].setup {
+--       capabilities = capabilities,
+--       on_attach = on_attach,
+--       settings = servers[server_name],
+--       filetypes = (servers[server_name] or {}).filetypes,
+--     }
+--   end,
+-- }
 
 local lspconfig = require("lspconfig")
 local configs = require("lspconfig.configs")

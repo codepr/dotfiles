@@ -1,40 +1,56 @@
-local hiragana = {
-  "あいうえお",
-  "かきくけこ",
-  "さしすせそ",
-  "たちツテと",
-  "なにぬねの",
-  "はひふへほ",
-  "まみむめも",
+local keiyoushi = {
+  "静か・しずか",
+  "賑やか・にぎやか",
+  "つまらない",
+  "冷たい・つめたい",
+  "悪い・わるい",
+  "忙しい・いそがしい",
+  "有名・ゆうめい",
+  "涼しい・すずしい",
+  "少ない・すくない",
+  "難しい・むずかしい",
 }
 
+-- local goonies = "グーニーズは絶対に死なない"
+
 local modes = {
-  ["n"] = "NORMAL",
-  ["no"] = "NORMAL",
-  ["v"] = "VISUAL",
-  ["V"] = "VISUAL LINE",
-  [""] = "VISUAL BLOCK",
-  ["s"] = "SELECT",
-  ["S"] = "SELECT LINE",
-  [""] = "SELECT BLOCK",
-  ["i"] = "INSERT",
-  ["ic"] = "INSERT",
-  ["R"] = "REPLACE",
-  ["Rv"] = "VISUAL REPLACE",
-  ["c"] = "COMMAND",
-  ["cv"] = "VIM EX",
+  ["n"] = "N",
+  ["no"] = "N",
+  ["v"] = "V",
+  ["V"] = "VL",
+  [""] = "VB",
+  ["s"] = "S",
+  ["S"] = "SL",
+  [""] = "SB",
+  ["i"] = "I",
+  ["ic"] = "I",
+  ["R"] = "R",
+  ["Rv"] = "VR",
+  ["c"] = "C",
+  ["cv"] = "VE",
   ["ce"] = "EX",
-  ["r"] = "PROMPT",
-  ["rm"] = "MOAR",
-  ["r?"] = "CONFIRM",
-  ["!"] = "SHELL",
-  ["t"] = "TERMINAL",
+  ["r"] = "P",
+  ["rm"] = "M",
+  ["r?"] = "C",
+  ["!"] = "S",
+  ["t"] = "T",
 }
+
+local tick = os.time()
+local last_keiyoushi = keiyoushi[math.random(10)]
+
+local function next_keyoushi()
+  if os.time() - tick > 10 then
+    last_keiyoushi = keiyoushi[math.random(10)]
+    tick = os.time()
+  end
+end
 
 local function mode()
   local current_mode = vim.api.nvim_get_mode().mode
+  next_keyoushi()
   -- return string.format(" %s  くま", modes[current_mode]):upper()
-  return string.format(" %s  %s", modes[current_mode], hiragana[5]):upper()
+  return string.format(" %s  %s", modes[current_mode], last_keiyoushi):upper()
 end
 
 

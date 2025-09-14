@@ -1,9 +1,9 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-export TERM=screen-256color
+export TERM=xterm-256color
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -104,25 +104,28 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="/Users/andrea/.mix/escripts:$PATH"
+export PATH="/Users/andrea/.local/bin:$PATH"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # iex permanent history
 export ERL_AFLAGS="-kernel shell_history enabled"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#565656,bold'
 
 alias python=python3
 alias pip=pip3
 alias utcnow="python -c 'import time;print(time.time())'"
-alias vi=nvim
+# alias vi=nvim
 alias ls='ls --color'
 alias ll='ls -l --color'
 alias la='ls -la --color'
-alias v=vi
+alias v=nvim
 
 alias dp="DUFFEL_LINK_ENABLE_PROXY=true DUFFEL_LINK_SKIP_SSL_VERIFY=true mix phx.server"
 alias dt="kubectl -n monitoring port-forward svc/squid 3128:3128"
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# . /opt/homebrew/opt/asdf/asdf.sh

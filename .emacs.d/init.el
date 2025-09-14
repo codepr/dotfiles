@@ -27,6 +27,11 @@
 (setq inhibit-startup-message t)   ;; Show/hide startup page
 (setq initial-scratch-message t) ;; Show/hide *scratch* buffer message
 
+(setq mac-option-key-is-meta nil
+      mac-command-key-is-meta t
+      mac-command-modifier 'meta
+      mac-option-modifier 'none)
+
 (when window-system
   (menu-bar-mode -1)                  ;; Show/hide menubar
   (tool-bar-mode -1)                  ;; Show/hide toolbar
@@ -455,7 +460,7 @@
                          "--header-insertion=never"
                          "--header-insertion-decorators=0"))))
 (with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs '((elixir-mode elixir-ts-mode) . ("elixir-ls"))))
+  (add-to-list 'eglot-server-programs '((elixir-mode elixir-ts-mode) . ("/opt/homebrew/bin/elixir-ls"))))
 
 ;; (add-hook 'cc-mode-hook 'eglot-ensure)
 ;; (add-hook 'elixir-mode-hook 'eglot-ensure)

@@ -1,5 +1,6 @@
 
 local settings = {
+    background = "dark",
     timeoutlen = 300,
     -- ====================
     -- Editor
@@ -41,10 +42,11 @@ local settings = {
     -- UI
     ---------------------
     number = true,
-    relativenumber = false,
-    scrolloff = 8,
+    relativenumber = true,
+    autoread = true,
+    scrolloff = 10,
     ruler = true,
-    cursorline = true,
+    cursorline = false,
     list = true,
     listchars = "trail:·,tab:→ ,nbsp:·",
     tabstop = 4,
@@ -61,7 +63,6 @@ local settings = {
     ttyfast = true,
     splitright = true,
     splitbelow = true,
-    -- guicursor = "",
     --------
     -- Shell
     --------
@@ -72,7 +73,9 @@ local settings = {
     -- Commands
     -----------
     inccommand = "nosplit",
+    autoindent = true,
     smartindent = true,
+    backspace = 'indent,eol,start',
 
     incsearch = true,
     hlsearch = true,
@@ -85,8 +88,12 @@ local settings = {
 
     foldmethod = "indent",
     foldenable = false,
-    foldlevel = 99
+    foldlevel = 99,
+
+    grepprg = "rg --line-number --column",
+    grepformat = "%f:%l:%c:%m"
 }
+
 for k, v in pairs(settings) do
     vim.opt[k] = v
 end
@@ -181,9 +188,9 @@ local config = {
   signs = {
     active = signs, -- show signs
   },
-  virtual_text = true,
+  virtual_text = false,
   update_in_insert = false,
-  underline = true,
+  underline = false,
   severity_sort = true,
   float = {
     focusable = true,
@@ -227,4 +234,19 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
   group = "lsp_diagnostics_hold",
 })
 
-vim.api.nvim_create_user_command("RestNvim", require("rest-nvim").run, {})
+-- always open quickfix window automatically.
+-- this uses cwindows which will open it only if there are entries.
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+  group = vim.api.nvim_create_augroup("AutoOpenQuickfix", { clear = true }),
+  pattern = { "[^l]*" },
+  command = "cwindow"
+})
+
+vim.diagnostic.handlers["quickfix"] = {
+  show = function(_, _, _, _)
+    vim.diagnostic.setqflist({ open = false }) -- open = false prevents opening the qflist automatically
+  end,
+  hide = function(_, _)
+    vim.fn.setqflist({}, 'r') -- Clear the quickfix list when diagnostics are hidden
+  end
+}

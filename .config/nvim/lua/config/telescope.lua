@@ -25,28 +25,10 @@ require('telescope').setup({
       "%.gif$",
       "%.icns",
       "%.zip$",
+      "%.o$",
       ".DS_Store", -- needs to be explicitly added, since unignored in some repos
       "%-bkp$", -- backup files
     }
-    -- selection_caret = "󰜋 ",
-    -- prompt_prefix = "❱ ",
-    -- multi_icon = "󰒆 ",
-    -- file_ignore_patterns = {
-    --     "%.git/",
-    --     "%.git$", -- git dir in submodules
-    --     "node_modules/", -- node
-    --     "venv/", -- python
-    --     "%.app/", -- internals of mac apps
-    --     "%.pxd", -- Pixelmator
-    --     "%.plist$", -- Alfred
-    --     "%.project-root$", -- harpoon/projects
-    --     "%.png$",
-    --     "%.gif$",
-    --     "%.icns",
-    --     "%.zip$",
-    --     ".DS_Store", -- needs to be explicitly added, since unignored in some repos
-    --     "%-bkp$", -- backup files
-    -- },
   }
 })
 

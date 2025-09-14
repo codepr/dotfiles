@@ -30,12 +30,7 @@ require('lazy').setup({
 
   { 'mhinz/vim-grepper' },
 
-  {
-    'rmagatti/goto-preview',
-    config = function()
-      require('goto-preview').setup {}
-    end
-  },
+  { 'RostislavArts/naysayer.nvim' },
 
   { 'tpope/vim-fugitive' },
 
@@ -56,7 +51,12 @@ require('lazy').setup({
   { 'tpope/vim-sleuth' },
 
   -- Match parens effectively
-  { 'andymass/vim-matchup' },
+  { 'andymass/vim-matchup',
+    config = function()
+      -- may set any options here
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end
+  },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -97,14 +97,14 @@ require('lazy').setup({
     event = { "InsertEnter", "CmdlineEnter" }, -- CmdlineEnter for completions there
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
+      -- 'L3MON4D3/LuaSnip',
+      -- 'saadparwaiz1/cmp_luasnip',
 
       -- Adds LSP completion capabilities
       'hrsh7th/cmp-nvim-lsp',
 
-      -- Adds a number of user-friendly snippets
-      'rafamadriz/friendly-snippets',
+      -- -- Adds a number of user-friendly snippets
+      -- 'rafamadriz/friendly-snippets',
 
       -- Buffer completion
       'hrsh7th/cmp-buffer',
@@ -199,8 +199,17 @@ require('lazy').setup({
     dependencies = {
       'nvim-tree/nvim-web-devicons'
     },
+    lazy = true,
+    event = "VeryLazy",
     config = function()
-      require("nvim-tree").setup()
+      require("nvim-tree").setup({
+        filters = {
+          dotfiles = false,
+          custom = {
+            "\\.o$", -- This regular expression filters out files ending with .o
+          },
+        }
+      })
     end
   },
 
@@ -217,125 +226,54 @@ require('lazy').setup({
 
   { "mcchrish/zenbones.nvim" },
 
+  { "karoliskoncevicius/distilled-vim" },
+
+  { "morhetz/gruvbox" },
+
+  { 'codepr/neovim-coldnight' },
+
+  {'akinsho/toggleterm.nvim', version = "*", config = true},
+
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
+    -- Make sure to set this up properly if you have lazy=true
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {
+      file_types = { "markdown", "Avante" },
+    },
+    ft = { "markdown", "Avante" },
+  },
+
+  {
+    'nvim-orgmode/orgmode',
+    event = 'VeryLazy',
     config = function()
-      function ColorMe(color, transparency)
-        color = color or "catppuccin"
-        require("catppuccin").setup({
-          flavour = "mocha", -- latte, frappe, macchiato, mocha
-          background = { -- :h background
-            light = "latte",
-            dark = "mocha",
-          },
-          transparent_background = false, -- disables setting the background color.
-          show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-          term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
-          dim_inactive = {
-            enabled = false, -- dims the background color of inactive window
-            shade = "dark",
-            percentage = 0.15, -- percentage of the shade to apply to the inactive window
-          },
-          no_italic = false, -- Force no italic
-          no_bold = false, -- Force no bold
-          no_underline = false, -- Force no underline
-          styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-            comments = { "italic" }, -- Change the style of comments
-            conditionals = { "italic" },
-            loops = {},
-            functions = {},
-            keywords = {},
-            strings = {},
-            variables = {},
-            numbers = {},
-            booleans = {},
-            properties = {},
-            types = {},
-            operators = {},
-          },
-          color_overrides = {},
-          custom_highlights = {},
-          integrations = {
-            cmp = true,
-            gitsigns = true,
-            nvimtree = true,
-            treesitter = true,
-            notify = false,
-            mini = {
-              enabled = true,
-              indentscope_color = "",
+      -- Setup orgmode
+      require('orgmode').setup({
+        org_agenda_files = '~/orgfiles/**/*',
+        org_default_notes_file = '~/orgfiles/refile.org',
+        org_capture_templates = {
+          a = {
+                description = "Articles",
+                template = '* TODO %?\n %u',
+                target = "~/orgfiles/articles.org",
             },
+          w = {
+                description = "Work",
+                template = '* TODO %?\n %u',
+                target = "~/orgfiles/work.org",
           },
-        })
-        vim.cmd.colorscheme(color)
-        if transparency then
-          vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
-          vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#202020" })
-          vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#e86671", bg = "none" })
-          vim.cmd 'highlight TelescopeBorder guibg=none'
-          vim.cmd 'highlight TelescopeTitle guibg=none'
-          vim.cmd 'highlight TelescopePromptNormal guibg=none'
-          vim.cmd 'highlight TelescopeResultsNormal guibg=none'
-          vim.cmd 'highlight TelescopePreviewNormal guibg=none'
-          vim.cmd 'highlight NvimTreeNormal guibg=none'
-          vim.cmd 'highlight NvimTreeNormalNC guibg=none'
-        end
-      end
-
-      -- ColorMe('catppuccin', false)
-      ColorMe("zenbones", false)
-    end,
-
-  },
-
-  {
-    'rest-nvim/rest.nvim',
-    dependencies = { { "nvim-lua/plenary.nvim" } },
-    commit = "8b62563",
-    config = function()
-      require("rest-nvim").setup({
-        -- Open request results in a horizontal split
-        result_split_horizontal = false,
-        -- Keep the http file buffer above|left when split horizontal|vertical
-        result_split_in_place = false,
-        -- Skip SSL verification, useful for unknown certificates
-        skip_ssl_verification = true,
-        -- Encode URL before making request
-        encode_url = true,
-        -- Highlight request on run
-        highlight = {
-          enabled = true,
-          timeout = 150,
-        },
-        result = {
-          -- toggle showing URL, HTTP info, headers at top the of result window
-          show_url = true,
-          -- show the generated curl command in case you want to launch
-          -- the same request via the terminal (can be verbose)
-          show_curl_command = true,
-          show_http_info = true,
-          show_headers = true,
-          -- executables or functions for formatting response body [optional]
-          -- set them to false if you want to disable them
-          formatters = {
-            json = "jq",
-            html = function(body)
-              return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
-            end
+          p = {
+                description = "Project",
+                template = '* TODO %?\n %u',
+                target = "~/orgfiles/projects.org",
           },
-        },
-        -- Jump to request line on run
-        jump_to_request = false,
-        env_file = '.env',
-        custom_dynamic_variables = {},
-        yank_dry_run = true,
+        }
       })
-    end
+    end,
   },
 
-  {'akinsho/toggleterm.nvim', version = "*", config = true}
+
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
